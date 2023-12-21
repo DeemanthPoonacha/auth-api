@@ -1,22 +1,41 @@
 import express from "express";
 import validateResource from "../middlewares/validateResource";
-import { createUserSchema, verifyUserSchema } from "../scemas/user.schema";
+import {
+    createUserSchema,
+    forgotPasswordSchema,
+    resetPasswordSchema,
+    verifyUserSchema,
+} from "../scemas/user.schema";
 import {
     createUserHandler,
+    forgotPasswordHandler,
+    resetPasswordHandler,
     verifyUserHandler,
 } from "../controllers/user.controller";
+const USER_ROUTE = "/api/users";
 const userRouter = express.Router();
-
 userRouter.post(
-    "/api/users",
+    `${USER_ROUTE}`,
     validateResource(createUserSchema),
     createUserHandler
 );
 
 userRouter.post(
-    "/api/users/:id/verify/:verificationCode",
+    `${USER_ROUTE}/:id/verify/:verificationCode`,
     validateResource(verifyUserSchema),
     verifyUserHandler
+);
+
+userRouter.post(
+    `${USER_ROUTE}/forgot-password`,
+    validateResource(forgotPasswordSchema),
+    forgotPasswordHandler
+);
+
+userRouter.post(
+    `${USER_ROUTE}/:id/reset-password/:passwordResetCode`,
+    validateResource(resetPasswordSchema),
+    resetPasswordHandler
 );
 
 export default userRouter;

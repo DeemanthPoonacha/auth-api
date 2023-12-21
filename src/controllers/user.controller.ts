@@ -1,8 +1,18 @@
 import { Request, Response } from "express";
-import { CreateUserInput, verifyUserInput } from "../scemas/user.schema";
-import { createUser, findUserById } from "../setvices/user.service";
+import {
+    CreateUserInput,
+    ForgotPasswordInput,
+    ResetPasswordInput,
+    verifyUserInput,
+} from "../scemas/user.schema";
+import {
+    createUser,
+    findUserByEmail,
+    findUserById,
+} from "../setvices/user.service";
 import sendEmail from "../utils/mailer";
 import log from "../utils/logger";
+import { v4 as uuidv4 } from "uuid";
 
 export async function createUserHandler(
     req: Request<{}, {}, CreateUserInput>,
@@ -48,4 +58,53 @@ export async function verifyUserHandler(
     } catch (error) {
         return res.status(500).send(error);
     }
+}
+
+export async function forgotPasswordHandler(
+    req: Request<{}, {}, ForgotPasswordInput>,
+    res: Response
+) {
+    const { email } = req.body;
+    const user = await findUserByEmail(email);
+    const message = `A password reset email will be sent to the ${email} if user is registered.`;
+    if (!user) {
+        log.debug(`User with email:${email} not found in DB`);
+        return res.send(message);
+    }
+    if (!user.verified) return res.send("User not verified!");
+
+    const passwordResetCode = uuidv4();
+    user.passwordResetCode = passwordResetCode;
+    await user.save();
+
+    await sendEmail({
+        from: "admin@auth.com",
+        to: user.email,
+        subject: "Password reset email",
+        text: `Password reset code: ${passwordResetCode}, Id: ${user._id}`,
+    });
+    return res.send(message);
+}
+
+export async function resetPasswordHandler(
+    req: Request<ResetPasswordInput["params"], {}, ResetPasswordInput["body"]>,
+    res: Response
+) {
+    const { id, passwordResetCode } = req.params;
+    const { password } = req.body;
+
+    const user = await findUserById(id);
+
+    if (
+        !user ||
+        !user.passwordResetCode ||
+        user.passwordResetCode !== passwordResetCode
+    ) {
+        return res.status(400).send("Couldn't reset password!");
+    }
+
+    user.passwordResetCode = null;
+    await user.save();
+
+    return res.send("Password reset successfully!");
 }

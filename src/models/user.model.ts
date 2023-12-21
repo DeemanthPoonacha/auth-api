@@ -5,11 +5,13 @@ import {
     pre,
     prop,
     DocumentType,
+    index,
 } from "@typegoose/typegoose";
 import argon2 from "argon2";
 import { v4 as uuidv4 } from "uuid";
 import log from "../utils/logger";
 
+@index({ email: 1 })
 @pre<User>("save", async function () {
     if (!this.isModified("password")) {
         return;
