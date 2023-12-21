@@ -9,7 +9,7 @@ const validateResource =
             schema.parse({ body, params, query });
             next();
         } catch (error: any) {
-            log.error("Scema validation error");
+            log.error("Schema validation error");
             res.status(400).send(error.errors);
         }
     };

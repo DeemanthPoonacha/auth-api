@@ -21,3 +21,16 @@ export const createUserSchema = object({
 });
 
 export type CreateUserInput = TypeOf<typeof createUserSchema>["body"];
+
+export const verifyUserSchema = object({
+    params: object({
+        id: string({
+            required_error: "id is missing!",
+        }),
+        verificationCode: string({
+            required_error: "verification code is missing!",
+        }),
+    }),
+});
+
+export type verifyUserInput = TypeOf<typeof verifyUserSchema>["params"];
