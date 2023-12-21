@@ -13,10 +13,11 @@ import {
     resetPasswordHandler,
     verifyUserHandler,
 } from "../controllers/user.controller";
+import requireUser from "../middlewares/requireUser";
 const USER_ROUTE = "/api/users";
 const userRouter = express.Router();
 
-userRouter.get(`${USER_ROUTE}/me`, getCurrentUserHandler);
+userRouter.get(`${USER_ROUTE}/me`, requireUser, getCurrentUserHandler);
 
 userRouter.post(
     `${USER_ROUTE}`,
