@@ -13,6 +13,8 @@ import {
 import sendEmail from "../utils/mailer";
 import log from "../utils/logger";
 import { v4 as uuidv4 } from "uuid";
+import config from "config";
+const senderMailId = config.get<string>("senderMailId");
 
 export async function createUserHandler(
     req: Request<{}, {}, CreateUserInput>,
@@ -22,7 +24,7 @@ export async function createUserHandler(
     try {
         const user = await createUser(body);
         await sendEmail({
-            from: "admin@auth.com",
+            from: senderMailId,
             to: user.email,
             subject: "Please verify your account",
             text: `Verification code: ${user.verificationCode}, Id: ${user._id}`,
@@ -78,7 +80,7 @@ export async function forgotPasswordHandler(
     await user.save();
 
     await sendEmail({
-        from: "admin@auth.com",
+        from: senderMailId,
         to: user.email,
         subject: "Password reset email",
         text: `Password reset code: ${passwordResetCode}, Id: ${user._id}`,

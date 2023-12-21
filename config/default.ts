@@ -1,7 +1,10 @@
 export default {
     port: 8080,
-    dbUri: "mongodb://localhost:27017/auth_db",
+    dbUri: "",
     logLevel: "info",
+    senderMailId: "admin@auth.com",
+    accessTokenPrivateKey: "",
+    refreshTokenPrivateKey: "",
     smtp: {
         auth: {
             user: "u34mmkjbmmthpq2l@ethereal.email",
