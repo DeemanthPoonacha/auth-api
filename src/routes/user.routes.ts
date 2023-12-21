@@ -9,11 +9,15 @@ import {
 import {
     createUserHandler,
     forgotPasswordHandler,
+    getCurrentUserHandler,
     resetPasswordHandler,
     verifyUserHandler,
 } from "../controllers/user.controller";
 const USER_ROUTE = "/api/users";
 const userRouter = express.Router();
+
+userRouter.get(`${USER_ROUTE}/me`, getCurrentUserHandler);
+
 userRouter.post(
     `${USER_ROUTE}`,
     validateResource(createUserSchema),

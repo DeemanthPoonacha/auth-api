@@ -27,6 +27,9 @@ export function verifyJwt<T>(
         config.get<string>(keyName),
         "base64"
     ).toString("ascii");
+    console.log(keyName, config.get<string>(keyName), publicKey);
+
+    console.log("token: " + JSON.stringify(token));
 
     try {
         const decoded = jwt.verify(token, publicKey) as T;
