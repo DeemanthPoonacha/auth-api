@@ -18,12 +18,19 @@ export async function createSessionHandler(
     const message = "Invalid credentials!";
 
     const user = await findUserByEmail(email);
-    if (!user) return res.send(message);
-    if (!user.verified) return res.send("Please verify your email.");
-
+    if (!user) {
+        log.info("User not found");
+        return res.send(message);
+    }
+    if (!user.verified) {
+        log.info("User not verified");
+        return res.send("Please verify your email.");
+    }
     const isValid = await user.validatePassword(password);
-    if (!isValid) return res.send(message);
-
+    if (!isValid) {
+        log.info("Invalid password");
+        return res.send(message);
+    }
     const accessToken = signAccessToken(user);
     console.log(user._id);
 

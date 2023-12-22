@@ -26,6 +26,8 @@ export const privateUserFields = [
     }
 
     const hash = await argon2.hash(this.password);
+    console.log("password", hash);
+
     this.password = hash;
     return;
 })
@@ -61,6 +63,9 @@ export class User {
         candidatePassword: string
     ) {
         try {
+            const pas = await argon2.hash(candidatePassword);
+            console.log(pas, this.password);
+
             return await argon2.verify(this.password, candidatePassword);
         } catch (error) {
             log.error(`Error occured while validating password: ${error}`);

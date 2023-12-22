@@ -6,7 +6,7 @@ export default async function connectToDb() {
     const dbUri = config.get<string>("dbUri");
 
     try {
-        await mongoose.connect(dbUri);
+        await mongoose.connect(dbUri, { dbName: "authentication_db" });
         log.info("Connected to database");
     } catch (error) {
         log.error("An error occurred while connecting to database");

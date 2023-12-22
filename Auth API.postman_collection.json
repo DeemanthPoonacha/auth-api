@@ -1,8 +1,9 @@
 {
     "info": {
-        "_postman_id": "b6112553-5204-4c5c-b71b-af7c35fdb4c3",
+        "_postman_id": "b63ca422-fe08-4c93-8a56-7d4c3db5b087",
         "name": "Auth API",
-        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "25147017"
     },
     "item": [
         {
@@ -15,14 +16,11 @@
                             "listen": "prerequest",
                             "script": {
                                 "exec": [
-                                    "let firstName = pm.variables.replaceIn(\"{{$randomFirstName}}\")",
-                                    "let lastName = pm.variables.replaceIn(\"{{$randomFirstName}}\")",
+                                    "let fullName = pm.variables.replaceIn(\"{{$randomFullName}}\")",
                                     "",
-                                    "pm.environment.set(\"firstName\", firstName)",
+                                    "pm.environment.set(\"fullName\", fullName)",
                                     "",
-                                    "pm.environment.set(\"lastName\", lastName)",
-                                    "",
-                                    "pm.environment.set(\"email\", `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com`)",
+                                    "pm.environment.set(\"email\", `${fullName.toLowerCase().replaceAll(\" \",\".\")}@example.com`)",
                                     ""
                                 ],
                                 "type": "text/javascript"
@@ -34,7 +32,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\",\n    \"passwordConfirmation\": \"{{password}}\"\n}",
+                            "raw": "{\n    \"fullName\": \"{{fullName}}\",\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\",\n    \"passwordConfirm\": \"{{password}}\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -70,8 +68,8 @@
                             },
                             "status": "OK",
                             "code": 200,
-                            "_postman_previewlanguage": null,
-                            "header": null,
+                            "_postman_previewlanguage": "Text",
+                            "header": [],
                             "cookie": [],
                             "body": "\"User successfully created\""
                         },
@@ -97,8 +95,8 @@
                             },
                             "status": "Bad Request",
                             "code": 400,
-                            "_postman_previewlanguage": null,
-                            "header": null,
+                            "_postman_previewlanguage": "Text",
+                            "header": [],
                             "cookie": [],
                             "body": "[\n    {\n        \"code\": \"custom\",\n        \"message\": \"Passwords do not match\",\n        \"path\": [\n            \"body\",\n            \"passwordConfirmation\"\n        ]\n    }\n]"
                         },
@@ -124,8 +122,8 @@
                             },
                             "status": "Conflict",
                             "code": 409,
-                            "_postman_previewlanguage": null,
-                            "header": null,
+                            "_postman_previewlanguage": "Text",
+                            "header": [],
                             "cookie": [],
                             "body": "Account already exists"
                         }
@@ -137,23 +135,23 @@
                         "method": "POST",
                         "header": [],
                         "url": {
-                            "raw": "{{host}}/api/users/verify/:id/:verificationCode",
+                            "raw": "{{host}}/api/users/:id/verify/:verificationCode",
                             "host": ["{{host}}"],
                             "path": [
                                 "api",
                                 "users",
-                                "verify",
                                 ":id",
+                                "verify",
                                 ":verificationCode"
                             ],
                             "variable": [
                                 {
                                     "key": "id",
-                                    "value": "61be7e9d6915497c4c74739f"
+                                    "value": "65851c6b36fe46854de850c6"
                                 },
                                 {
                                     "key": "verificationCode",
-                                    "value": "3M7xxwyXUw7ALUgfw6ets"
+                                    "value": "c503dc31-1ecd-4cb2-b875-ba2dada64388"
                                 }
                             ]
                         }
@@ -175,9 +173,9 @@
                             }
                         },
                         "url": {
-                            "raw": "{{host}}/api/users/forgotpassword",
+                            "raw": "{{host}}/api/users/forgot-password",
                             "host": ["{{host}}"],
-                            "path": ["api", "users", "forgotpassword"]
+                            "path": ["api", "users", "forgot-password"]
                         }
                     },
                     "response": []
@@ -189,7 +187,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{passwordTwo}}\",\n    \"passwordConfirmation\": \"{{passwordTwo}}\"\n}",
+                            "raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password2}}\",\n    \"passwordConfirm\": \"{{password2}}\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -197,23 +195,23 @@
                             }
                         },
                         "url": {
-                            "raw": "{{host}}/api/users/resetpassword/:id/:passwordResetCode",
+                            "raw": "{{host}}/api/users/:id/reset-password/:passwordResetCode",
                             "host": ["{{host}}"],
                             "path": [
                                 "api",
                                 "users",
-                                "resetpassword",
                                 ":id",
+                                "reset-password",
                                 ":passwordResetCode"
                             ],
                             "variable": [
                                 {
                                     "key": "id",
-                                    "value": "61cabf58153e81f1149e3b0b"
+                                    "value": "6583e114853dde8b25087c3c"
                                 },
                                 {
                                     "key": "passwordResetCode",
-                                    "value": "mtYNFmNeKjdKyIjZIkeJo"
+                                    "value": "216d794f-c524-4d20-b4dd-ad7e3bcd96ed"
                                 }
                             ]
                         }
@@ -275,7 +273,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{passwordTwo}}\"\n}",
+                            "raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password2}}\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -322,6 +320,19 @@
                     "response": []
                 }
             ]
+        },
+        {
+            "name": "Health Check",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{host}}/ping",
+                    "host": ["{{host}}"],
+                    "path": ["ping"]
+                }
+            },
+            "response": []
         }
     ]
 }

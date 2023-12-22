@@ -102,9 +102,14 @@ export async function resetPasswordHandler(
         !user.passwordResetCode ||
         user.passwordResetCode !== passwordResetCode
     ) {
+        if (!user) log.info("User not found");
+        if (!user?.passwordResetCode) log.info("No password reset code found");
+        if (user?.passwordResetCode !== passwordResetCode)
+            log.info("Password reset code mismatch");
+
         return res.status(400).send("Couldn't reset password!");
     }
-
+    user.password = password;
     user.passwordResetCode = null;
     await user.save();
 
