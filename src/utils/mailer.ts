@@ -34,3 +34,4 @@ export default async function sendEmail(payload: SendMailOptions) {
         log.info(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
     });
 }
+

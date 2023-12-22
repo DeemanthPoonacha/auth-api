@@ -1,5 +1,6 @@
 export default {
     port: 8080,
+    origin: "http://localhost:3000",
     dbUri: "",
     logLevel: "info",
     senderMailId: "admin@auth.com",
