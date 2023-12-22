@@ -63,9 +63,6 @@ export class User {
         candidatePassword: string
     ) {
         try {
-            const pas = await argon2.hash(candidatePassword);
-            console.log(pas, this.password);
-
             return await argon2.verify(this.password, candidatePassword);
         } catch (error) {
             log.error(`Error occured while validating password: ${error}`);
