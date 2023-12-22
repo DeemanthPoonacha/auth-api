@@ -4,6 +4,8 @@ export default {
     dbUri: "",
     logLevel: "info",
     senderMailId: "admin@auth.com",
+    accessTokenTtl: "15m",
+    refreshTokenTtl: "1y",
     accessTokenPrivateKey: "",
     refreshTokenPrivateKey: "",
     smtp: {
