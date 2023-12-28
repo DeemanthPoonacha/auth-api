@@ -1,6 +1,6 @@
-import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 dotenv.config();
+import express, { Express } from "express";
 import config from "config";
 import log from "./utils/logger";
 import router from "./routes";
@@ -9,6 +9,8 @@ import deserializeUser from "./middlewares/deserializeUser";
 import cors from "cors";
 
 const app: Express = express();
+
+//middlewares
 app.use(express.json());
 app.use(
     cors({
@@ -18,9 +20,6 @@ app.use(
 );
 app.use(deserializeUser);
 app.use(router);
-app.get("/", (req: Request, res: Response) => {
-    res.send("Authentification Server running on port " + port);
-});
 
 const port = config.get("port");
 app.listen(port, () => {

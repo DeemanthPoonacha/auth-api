@@ -3,6 +3,7 @@ import { CreateSessionInput } from "../scemas/auth.schema";
 import { findUserByEmail, findUserById } from "../setvices/user.service";
 import {
     findSessionById,
+    findSessionByUser,
     signAccessToken,
     signRefreshToken,
 } from "../setvices/auth.service";
@@ -66,4 +67,18 @@ export async function refreshAccessTokenHandler(req: Request, res: Response) {
     }
     const accessToken = signAccessToken(user);
     return res.send({ accessToken });
+}
+
+export async function invalidateSessionHandler(req: Request, res: Response) {
+    const userId = get(res.locals.user, "_id");
+    if (!userId) return res.send("User not logged in");
+
+    const sessions = await findSessionByUser({ userId });
+    if (!sessions.length) return res.send("No session found!");
+    sessions.forEach(async (session) => {
+        session.valid = false;
+        await session.save();
+    });
+
+    return res.send({ accessToken: null, refreshToken: null });
 }

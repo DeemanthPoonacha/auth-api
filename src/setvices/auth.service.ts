@@ -34,3 +34,7 @@ export function signAccessToken(user: DocumentType<User>) {
 export async function findSessionById(id: string) {
     return SessionModel.findById(id);
 }
+
+export async function findSessionByUser({ userId }: { userId: any }) {
+    return SessionModel.find({ user: userId });
+}
