@@ -16,6 +16,7 @@ import sendEmail from "../utils/mailer";
 import log from "../utils/logger";
 import { v4 as uuidv4 } from "uuid";
 import config from "config";
+import { CurrentUser } from "../types/user";
 const senderMailId = config.get<string>("senderMailId");
 
 export async function createUserHandler(
@@ -126,18 +127,18 @@ export async function getCurrentUserHandler(req: Request, res: Response) {
 export async function deleteUserHandler(req: Request, res: Response) {
     const message = "Couldn't delete user";
 
-    const user = res.locals.user;
+    const user: CurrentUser = res.locals.user;
     if (!user) {
         log.info("User not logged in");
         return res.status(400).send(message);
     }
 
-    const result = await deleteUserById(user._id);
+    const result = await deleteUserById(String(user._id));
     if (!result.deletedCount) {
         log.info("User not found in DB");
         return res.status(400).send(message);
     }
 
-    await invalidateUserSessions({ userId: user._id });
+    await invalidateUserSessions({ userId: String(user._id) });
     return res.send("User deleted successfully!");
 }

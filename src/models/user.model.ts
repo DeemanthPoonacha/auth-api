@@ -17,7 +17,7 @@ export const privateUserFields = [
     "verificationCode",
     "passwordResetCode",
     "verified",
-];
+] as const;
 
 @index({ email: 1 })
 @pre<User>("save", async function () {
