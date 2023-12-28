@@ -14,7 +14,7 @@ import log from "../utils/logger";
 export const privateUserFields = [
     "password",
     "__v",
-    "verficationCode",
+    "verificationCode",
     "passwordResetCode",
     "verified",
 ];
@@ -26,8 +26,6 @@ export const privateUserFields = [
     }
 
     const hash = await argon2.hash(this.password);
-    console.log("password", hash);
-
     this.password = hash;
     return;
 })

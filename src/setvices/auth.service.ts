@@ -35,6 +35,14 @@ export async function findSessionById(id: string) {
     return SessionModel.findById(id);
 }
 
-export async function findSessionByUser({ userId }: { userId: any }) {
+export async function findSessionsByUser({ userId }: { userId: any }) {
     return SessionModel.find({ user: userId });
+}
+
+export async function invalidateUserSessions({ userId }: { userId: any }) {
+    const result = await SessionModel.updateMany(
+        { user: userId, valid: true },
+        { $set: { valid: false } }
+    );
+    return result.modifiedCount;
 }

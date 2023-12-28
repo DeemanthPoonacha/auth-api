@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { verifyJwt } from "../utils/jwtUtils";
+import log from "../utils/logger";
 
 export default async function deserializeUser(
     req: Request,
@@ -17,6 +18,7 @@ export default async function deserializeUser(
 
     if (decoded) {
         res.locals.user = decoded;
+        log.info("User deserialized");
     }
 
     return next();

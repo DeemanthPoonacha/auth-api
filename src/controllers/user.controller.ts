@@ -7,9 +7,11 @@ import {
 } from "../scemas/user.schema";
 import {
     createUser,
+    deleteUserById,
     findUserByEmail,
     findUserById,
 } from "../setvices/user.service";
+import { invalidateUserSessions } from "../setvices/auth.service";
 import sendEmail from "../utils/mailer";
 import log from "../utils/logger";
 import { v4 as uuidv4 } from "uuid";
@@ -109,6 +111,7 @@ export async function resetPasswordHandler(
 
         return res.status(400).send("Couldn't reset password!");
     }
+
     user.password = password;
     user.passwordResetCode = null;
     await user.save();
@@ -118,4 +121,23 @@ export async function resetPasswordHandler(
 
 export async function getCurrentUserHandler(req: Request, res: Response) {
     return res.send(res.locals.user);
+}
+
+export async function deleteUserHandler(req: Request, res: Response) {
+    const message = "Couldn't delete user";
+
+    const user = res.locals.user;
+    if (!user) {
+        log.info("User not logged in");
+        return res.status(400).send(message);
+    }
+
+    const result = await deleteUserById(user._id);
+    if (!result.deletedCount) {
+        log.info("User not found in DB");
+        return res.status(400).send(message);
+    }
+
+    await invalidateUserSessions({ userId: user._id });
+    return res.send("User deleted successfully!");
 }

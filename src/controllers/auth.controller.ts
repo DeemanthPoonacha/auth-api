@@ -3,7 +3,7 @@ import { CreateSessionInput } from "../scemas/auth.schema";
 import { findUserByEmail, findUserById } from "../setvices/user.service";
 import {
     findSessionById,
-    findSessionByUser,
+    invalidateUserSessions,
     signAccessToken,
     signRefreshToken,
 } from "../setvices/auth.service";
@@ -73,12 +73,9 @@ export async function invalidateSessionHandler(req: Request, res: Response) {
     const userId = get(res.locals.user, "_id");
     if (!userId) return res.send("User not logged in");
 
-    const sessions = await findSessionByUser({ userId });
-    if (!sessions.length) return res.send("No session found!");
-    sessions.forEach(async (session) => {
-        session.valid = false;
-        await session.save();
-    });
+    const invalidatedCount = await invalidateUserSessions({ userId });
+    log.info(`${invalidatedCount} sessions Invalidated`);
+    if (!invalidatedCount) return res.send("No sessions found!");
 
     return res.send({ accessToken: null, refreshToken: null });
 }
