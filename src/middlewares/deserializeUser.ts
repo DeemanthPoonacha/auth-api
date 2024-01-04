@@ -18,7 +18,6 @@ export default async function deserializeUser(
 
     if (decoded) {
         res.locals.user = decoded;
-        log.info("User deserialized");
     }
 
     return next();

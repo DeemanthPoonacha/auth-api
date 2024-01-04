@@ -8,7 +8,6 @@ export default async function requireUser(
 ) {
     const user = res.locals.user;
     if (!user) return res.sendStatus(403);
-    log.info("User logged in");
 
     return next();
 }

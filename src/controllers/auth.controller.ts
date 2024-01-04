@@ -27,6 +27,8 @@ export async function createSessionHandler(
         log.info("User not verified");
         return res.send("Please verify your email.");
     }
+    console.log(String(user._id));
+
     const isValid = await user.validatePassword(password);
     if (!isValid) {
         log.info("Invalid password");
@@ -34,7 +36,7 @@ export async function createSessionHandler(
     }
     const accessToken = signAccessToken(user);
 
-    const refreshToken = await signRefreshToken({ userId: user._id });
+    const refreshToken = await signRefreshToken({ userId: String(user._id) });
 
     return res.send({ accessToken, refreshToken });
 }
@@ -58,7 +60,6 @@ export async function refreshAccessTokenHandler(req: Request, res: Response) {
         log.info("Session not found or invalid");
         return res.status(400).send(message);
     }
-    console.log(String(session.user));
 
     const user = await findUserById(String(session.user));
     if (!user) {

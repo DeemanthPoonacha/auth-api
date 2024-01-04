@@ -5,11 +5,11 @@ import SessionModel from "../models/session.model";
 import { omit } from "lodash";
 import config from "config";
 
-export function createSession({ userId }: { userId: any }) {
+export function createSession({ userId }: { userId: string }) {
     return SessionModel.create({ user: userId });
 }
 
-export async function signRefreshToken({ userId }: { userId: any }) {
+export async function signRefreshToken({ userId }: { userId: string }) {
     const session = await createSession({ userId });
 
     const refreshToken = signJwt(

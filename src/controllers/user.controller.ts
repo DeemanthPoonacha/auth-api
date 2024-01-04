@@ -73,7 +73,7 @@ export async function forgotPasswordHandler(
     const user = await findUserByEmail(email);
     const message = `A password reset email will be sent to the ${email} if user is registered.`;
     if (!user) {
-        log.debug(`User with email:${email} not found in DB`);
+        log.info(`User with email:${email} not found in DB`);
         return res.send(message);
     }
     if (!user.verified) return res.send("User not verified!");
