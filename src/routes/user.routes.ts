@@ -15,41 +15,48 @@ import {
     verifyUserHandler,
 } from "../controllers/user.controller";
 import requireUser from "../middlewares/requireUser";
-const USER_ROUTE = "/api/users";
+import {
+    CURRENT_USER_API_PATH,
+    USERS_API_PATH,
+    VERIFY_USER_API_PATH,
+    FORGOT_PASSWORD_API_PATH,
+    RESET_PASSWORD_API_PATH,
+} from "../constants/apiPaths";
+
 const userRouter = express.Router();
 
 // current user info
-userRouter.get(`${USER_ROUTE}/me`, requireUser, getCurrentUserHandler);
+userRouter.get(CURRENT_USER_API_PATH, requireUser, getCurrentUserHandler);
 
 // Create a new user
 userRouter.post(
-    `${USER_ROUTE}`,
+    USERS_API_PATH,
     validateResource(createUserSchema),
     createUserHandler
 );
 
 // verify user
 userRouter.post(
-    `${USER_ROUTE}/:id/verify/:verificationCode`,
+    VERIFY_USER_API_PATH,
     validateResource(verifyUserSchema),
     verifyUserHandler
 );
 
 // Request reset password
 userRouter.post(
-    `${USER_ROUTE}/forgot-password`,
+    FORGOT_PASSWORD_API_PATH,
     validateResource(forgotPasswordSchema),
     forgotPasswordHandler
 );
 
 // Reset password
 userRouter.post(
-    `${USER_ROUTE}/:id/reset-password/:passwordResetCode`,
+    RESET_PASSWORD_API_PATH,
     validateResource(resetPasswordSchema),
     resetPasswordHandler
 );
 
 // Delete user
-userRouter.delete(`${USER_ROUTE}`, requireUser, deleteUserHandler);
+userRouter.delete(USERS_API_PATH, requireUser, deleteUserHandler);
 
 export default userRouter;

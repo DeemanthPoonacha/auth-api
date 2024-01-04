@@ -7,17 +7,25 @@ import {
     refreshAccessTokenHandler,
 } from "../controllers/auth.controller";
 import requireUser from "../middlewares/requireUser";
-const AUTH_ROUTE = "/api/sessions";
+import {
+    LOGIN_API_PATH,
+    LOGOUT_API_PATH,
+    REFRESH_ACCESS_TOKEN_API_PATH,
+} from "../constants/apiPaths";
+
 const authRouter = express.Router();
 
+// Login user
 authRouter.post(
-    AUTH_ROUTE,
+    LOGIN_API_PATH,
     validateResource(createSessionSchema),
     createSessionHandler
 );
 
-authRouter.delete(AUTH_ROUTE, requireUser, invalidateSessionHandler);
+// Logout user
+authRouter.delete(LOGOUT_API_PATH, requireUser, invalidateSessionHandler);
 
-authRouter.post(`${AUTH_ROUTE}/refresh`, refreshAccessTokenHandler);
+// refresh access token
+authRouter.post(REFRESH_ACCESS_TOKEN_API_PATH, refreshAccessTokenHandler);
 
 export default authRouter;
