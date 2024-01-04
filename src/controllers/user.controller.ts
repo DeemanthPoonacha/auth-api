@@ -30,7 +30,7 @@ export async function createUserHandler(
             from: senderMailId,
             to: user.email,
             subject: "Please verify your account",
-            text: `Verification code: ${user.verificationCode}, Id: ${user._id}`,
+            html: `<p>To verify your email address, <a href="http://localhost:8080/api/users/${user._id}/verify/${user.verificationCode}">Click Here</a>.</p>`,
         });
         return res.send("User created successfully");
     } catch (error: any) {
@@ -59,7 +59,12 @@ export async function verifyUserHandler(
 
         user.verified = true;
         await user.save();
-        return res.send("User verified successfully!");
+        const frontendOrigin = config.get("origin");
+        return res.send(`
+        <div>
+            <p>User verified successfully!</p>
+            <p>To login to your account, <a href="${frontendOrigin}/auth/login">Click Here</a>.</p>
+        </div>`);
     } catch (error) {
         return res.status(500).send(error);
     }

@@ -36,7 +36,7 @@ userRouter.post(
 );
 
 // verify user
-userRouter.post(
+userRouter.get(
     VERIFY_USER_API_PATH,
     validateResource(verifyUserSchema),
     verifyUserHandler
