@@ -21,28 +21,48 @@ export async function createSessionHandler(
     const user = await findUserByEmail(email);
     if (!user) {
         log.info("User not found");
-        return res.send(message);
+        return res.status(400).send(message);
     }
     if (!user.verified) {
         log.info("User not verified");
-        return res.send("Please verify your email.");
+        return res.status(202).send("email-verification-pending");
     }
     console.log(String(user._id));
 
     const isValid = await user.validatePassword(password);
     if (!isValid) {
         log.info("Invalid password");
-        return res.send(message);
+        return res.status(400).send(message);
     }
     const accessToken = signAccessToken(user);
 
     const refreshToken = await signRefreshToken({ userId: String(user._id) });
 
+    res.cookie("accessToken", accessToken, {
+        maxAge: 15 * 60 * 1000, //15 minutes
+        httpOnly: true,
+        domain: "localhost",
+        path: "/",
+        sameSite: "strict",
+        secure: false,
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+        maxAge: 365 * 24 * 60 * 60 * 1000, //1 Year
+        httpOnly: true,
+        domain: "localhost",
+        path: "/",
+        sameSite: "strict",
+        secure: false,
+    });
+
     return res.send({ accessToken, refreshToken });
 }
 
 export async function refreshAccessTokenHandler(req: Request, res: Response) {
-    const refreshToken = get(req, "headers.x-refresh") as string;
+    const refreshToken =
+        get(req, "cookie.refreshToken") ||
+        (get(req, "headers.x-refresh") as string);
     const decoded = verifyJwt<{ session: string }>(
         refreshToken,
         "refreshTokenPublicKey"
@@ -78,5 +98,7 @@ export async function invalidateSessionHandler(req: Request, res: Response) {
     log.info(`${invalidatedCount} sessions Invalidated`);
     if (!invalidatedCount) return res.send("No sessions found!");
 
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
     return res.send({ accessToken: null, refreshToken: null });
 }

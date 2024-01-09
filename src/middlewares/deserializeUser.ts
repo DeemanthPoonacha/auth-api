@@ -1,16 +1,20 @@
 import { NextFunction, Request, Response } from "express";
 import { verifyJwt } from "../utils/jwtUtils";
-import log from "../utils/logger";
+import { get } from "lodash";
 
 export default async function deserializeUser(
     req: Request,
     res: Response,
     next: NextFunction
 ) {
-    const accessToken = (req.headers.authorization || "").replace(
-        /^Bearer\s/,
-        ""
-    );
+    const accessToken =
+        get(req, "cookies.accessToken") ||
+        get(req, "headers.authorization", "").replace(/^Bearer\s/, "");
+    console.log({
+        accessToken,
+        cookie: get(req, "cookies.accessToken"),
+        auth: get(req, "headers.authorization"),
+    });
 
     if (!accessToken) return next();
 

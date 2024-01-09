@@ -7,10 +7,12 @@ import router from "./routes";
 import connectToDb from "./utils/dbUtils";
 import deserializeUser from "./middlewares/deserializeUser";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app: Express = express();
 
 //middlewares
+app.use(cookieParser());
 app.use(express.json());
 app.use(
     cors({

@@ -32,12 +32,12 @@ export async function createUserHandler(
             subject: "Please verify your account",
             html: `<p>To verify your email address, <a href="http://localhost:8080/api/users/${user._id}/verify/${user.verificationCode}">Click Here</a>.</p>`,
         });
-        return res.send("User created successfully");
+        return res.send("User created successfully!");
     } catch (error: any) {
         if (error.code === 11000) {
             return res
                 .status(409)
-                .send(`Account with email: ${body.email} already exists`);
+                .send(`Account with email (${body.email}) already exists.`);
         }
         return res.status(500).send(error);
     }
@@ -52,14 +52,19 @@ export async function verifyUserHandler(
         const user = await findUserById(id);
 
         if (!user) return res.send("User not found!");
-        if (user.verified) return res.send("User already verified!");
+        const frontendOrigin = config.get("origin");
+        if (user.verified)
+            return res.send(`
+        <div>
+            <p>User already verified!</p>
+            <p>To login to your account, <a href="${frontendOrigin}/auth/login">Click Here</a>.</p>
+        </div>`);
         if (verificationCode !== user.verificationCode) {
             return res.send("Invalid verification code");
         }
 
         user.verified = true;
         await user.save();
-        const frontendOrigin = config.get("origin");
         return res.send(`
         <div>
             <p>User verified successfully!</p>
