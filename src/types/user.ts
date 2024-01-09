@@ -11,3 +11,9 @@ export type CurrentUser = Partial<
         (typeof privateUserFields)[number]
     >
 >;
+
+export type UserInDb = FlattenMaps<
+    User & {
+        _id: Types.ObjectId;
+    }
+>;

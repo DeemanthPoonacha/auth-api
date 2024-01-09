@@ -3,6 +3,7 @@ import validateResource from "../middlewares/validateResource";
 import {
     createUserSchema,
     forgotPasswordSchema,
+    resendVerificationSchema,
     resetPasswordSchema,
     verifyUserSchema,
 } from "../scemas/user.schema";
@@ -11,6 +12,7 @@ import {
     deleteUserHandler,
     forgotPasswordHandler,
     getCurrentUserHandler,
+    resendVerificationHandler,
     resetPasswordHandler,
     verifyUserHandler,
 } from "../controllers/user.controller";
@@ -21,6 +23,7 @@ import {
     VERIFY_USER_API_PATH,
     FORGOT_PASSWORD_API_PATH,
     RESET_PASSWORD_API_PATH,
+    RESEND_VERIFICATION_API_PATH,
 } from "../constants/apiPaths";
 
 const userRouter = express.Router();
@@ -33,6 +36,13 @@ userRouter.post(
     USERS_API_PATH,
     validateResource(createUserSchema),
     createUserHandler
+);
+
+// Resend verification email
+userRouter.post(
+    RESEND_VERIFICATION_API_PATH,
+    validateResource(resendVerificationSchema),
+    resendVerificationHandler
 );
 
 // verify user

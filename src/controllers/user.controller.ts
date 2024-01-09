@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import {
     CreateUserInput,
     ForgotPasswordInput,
+    ResendVerificationInput,
     ResetPasswordInput,
-    verifyUserInput,
+    VerifyUserInput,
 } from "../scemas/user.schema";
 import {
     createUser,
@@ -12,12 +13,13 @@ import {
     findUserById,
 } from "../setvices/user.service";
 import { invalidateUserSessions } from "../setvices/auth.service";
-import sendEmail from "../utils/mailer";
 import log from "../utils/logger";
 import { v4 as uuidv4 } from "uuid";
 import config from "config";
 import { CurrentUser } from "../types/user";
-const senderMailId = config.get<string>("senderMailId");
+import { sendVerificationMail } from "../utils/mailer";
+import { sendPasswordResetMail } from "../utils/mailer";
+export const senderMailId = config.get<string>("senderMailId");
 
 export async function createUserHandler(
     req: Request<{}, {}, CreateUserInput>,
@@ -26,12 +28,7 @@ export async function createUserHandler(
     const body = req.body;
     try {
         const user = await createUser(body);
-        await sendEmail({
-            from: senderMailId,
-            to: user.email,
-            subject: "Please verify your account",
-            html: `<p>To verify your email address, <a href="http://localhost:8080/api/users/${user._id}/verify/${user.verificationCode}">Click Here</a>.</p>`,
-        });
+        await sendVerificationMail(user);
         return res.send("User created successfully!");
     } catch (error: any) {
         if (error.code === 11000) {
@@ -43,8 +40,33 @@ export async function createUserHandler(
     }
 }
 
+export async function resendVerificationHandler(
+    req: Request<ResendVerificationInput>,
+    res: Response
+) {
+    const { id } = req.params;
+    try {
+        const user = await findUserById(id);
+
+        if (!user) return res.send("User not found!");
+        const frontendOrigin = config.get("origin");
+        if (user.verified)
+            return res.send(`
+        <div>
+            <p>User already verified!</p>
+            <p>To login to your account, <a href="${frontendOrigin}/auth/login">Click Here</a>.</p>
+        </div>`);
+        await sendVerificationMail(user);
+        return res.send(
+            "Verification mail will be sent to the Email address if registered."
+        );
+    } catch (error) {
+        return res.status(500).send(error);
+    }
+}
+
 export async function verifyUserHandler(
-    req: Request<verifyUserInput>,
+    req: Request<VerifyUserInput>,
     res: Response
 ) {
     const { id, verificationCode } = req.params;
@@ -92,12 +114,7 @@ export async function forgotPasswordHandler(
     user.passwordResetCode = passwordResetCode;
     await user.save();
 
-    await sendEmail({
-        from: senderMailId,
-        to: user.email,
-        subject: "Password reset email",
-        text: `Password reset code: ${passwordResetCode}, Id: ${user._id}`,
-    });
+    await sendPasswordResetMail(user, passwordResetCode);
     return res.send(message);
 }
 

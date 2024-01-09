@@ -1,6 +1,8 @@
 import nodemailer, { SendMailOptions } from "nodemailer";
 import log from "./logger";
 import config from "config";
+import { senderMailId } from "../controllers/user.controller";
+import { UserInDb } from "../types/user";
 
 async function generateTestCreds() {
     const testCreds = await nodemailer.createTestAccount();
@@ -18,12 +20,12 @@ const smtp = config.get<{
     port: number;
     secure: boolean;
 }>("smtp");
-log.info("smtp: ");
-log.info(smtp);
+// log.info("smtp: ");
+// log.info(smtp);
 
 const transporter = nodemailer.createTransport(smtp);
 
-export default async function sendEmail(payload: SendMailOptions) {
+async function sendEmail(payload: SendMailOptions) {
     transporter.sendMail(payload, (err, info) => {
         if (err) {
             log.error("Error sending email");
@@ -32,5 +34,26 @@ export default async function sendEmail(payload: SendMailOptions) {
         log.info("Mail sent successfully");
 
         log.info(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
+    });
+}
+
+export async function sendVerificationMail(user: UserInDb) {
+    await sendEmail({
+        from: senderMailId,
+        to: user.email,
+        subject: "Please verify your account",
+        html: `<p>To verify your email address, <a href="http://localhost:8080/api/users/${user._id}/verify/${user.verificationCode}">Click Here</a>.</p>`,
+    });
+}
+
+export async function sendPasswordResetMail(
+    user: UserInDb,
+    passwordResetCode: string
+) {
+    await sendEmail({
+        from: senderMailId,
+        to: user.email,
+        subject: "Password reset email",
+        text: `Password reset code: ${passwordResetCode}, Id: ${user._id}`,
     });
 }

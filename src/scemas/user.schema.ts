@@ -22,6 +22,18 @@ export const createUserSchema = object({
 
 export type CreateUserInput = TypeOf<typeof createUserSchema>["body"];
 
+export const resendVerificationSchema = object({
+    params: object({
+        id: string({
+            required_error: "id is missing!",
+        }),
+    }),
+});
+
+export type ResendVerificationInput = TypeOf<
+    typeof resendVerificationSchema
+>["params"];
+
 export const verifyUserSchema = object({
     params: object({
         id: string({
@@ -33,7 +45,7 @@ export const verifyUserSchema = object({
     }),
 });
 
-export type verifyUserInput = TypeOf<typeof verifyUserSchema>["params"];
+export type VerifyUserInput = TypeOf<typeof verifyUserSchema>["params"];
 
 export const forgotPasswordSchema = object({
     body: object({
