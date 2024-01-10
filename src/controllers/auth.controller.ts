@@ -27,7 +27,7 @@ export async function createSessionHandler(
         log.info("User not verified");
         return res
             .status(202)
-            .send({ path: "email-verification-pending", userId: user._id });
+            .send({ path: `email-verification-pending/${user._id}` });
     }
 
     const isValid = await user.validatePassword(password);

@@ -50,10 +50,11 @@ export async function sendPasswordResetMail(
     user: UserInDb,
     passwordResetCode: string
 ) {
+    const frontendOrigin = config.get("origin");
     await sendEmail({
         from: senderMailId,
         to: user.email,
         subject: "Password reset email",
-        text: `Password reset code: ${passwordResetCode}, Id: ${user._id}`,
+        html: `<p>To reset your password, <a href="${frontendOrigin}/auth/resetPassword/${user._id}/${passwordResetCode}">Click Here</a>.</p>`,
     });
 }

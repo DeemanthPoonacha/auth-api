@@ -106,45 +106,60 @@ export async function forgotPasswordHandler(
     const message = `A password reset email will be sent to the ${email} if user is registered.`;
     if (!user) {
         log.info(`User with email:${email} not found in DB`);
-        return res.send(message);
+        return res.status(202).send({ path: `password-reset-mail`, message });
     }
-    if (!user.verified) return res.send("User not verified!");
+    if (!user.verified) {
+        log.info("User not verified!");
+        return res
+            .status(202)
+            .send({ path: `email-verification-pending/${user._id}` });
+    }
 
     const passwordResetCode = uuidv4();
     user.passwordResetCode = passwordResetCode;
     await user.save();
 
     await sendPasswordResetMail(user, passwordResetCode);
-    return res.send(message);
+    return res.status(202).send({ path: `password-reset-mail`, message });
 }
 
 export async function resetPasswordHandler(
     req: Request<ResetPasswordInput["params"], {}, ResetPasswordInput["body"]>,
     res: Response
 ) {
-    const { id, passwordResetCode } = req.params;
-    const { password } = req.body;
+    try {
+        const { id, passwordResetCode } = req.params;
+        const { password } = req.body;
 
-    const user = await findUserById(id);
+        const user = await findUserById(id);
 
-    if (
-        !user ||
-        !user.passwordResetCode ||
-        user.passwordResetCode !== passwordResetCode
-    ) {
-        if (!user) log.info("User not found");
-        if (!user?.passwordResetCode) log.info("No password reset code found");
-        if (user?.passwordResetCode !== passwordResetCode)
-            log.info("Password reset code mismatch");
+        if (
+            !user ||
+            !user.passwordResetCode ||
+            user.passwordResetCode !== passwordResetCode
+        ) {
+            if (!user) log.info("User not found");
+            if (!user?.passwordResetCode)
+                log.info("No password reset code found");
+            if (user?.passwordResetCode !== passwordResetCode)
+                log.info("Password reset code mismatch");
 
+            return res.status(400).send("Couldn't reset password!");
+        }
+
+        user.password = password;
+        user.passwordResetCode = null;
+        await user.save();
+
+        log.info("Password reset successfully!");
+        return res.status(202).send({
+            path: `password-reset-success`,
+            message: "Password reset successfully!",
+        });
+    } catch (error) {
+        log.error(error);
         return res.status(400).send("Couldn't reset password!");
     }
-
-    user.password = password;
-    user.passwordResetCode = null;
-    await user.save();
-
-    return res.send("Password reset successfully!");
 }
 
 export async function getCurrentUserHandler(req: Request, res: Response) {
