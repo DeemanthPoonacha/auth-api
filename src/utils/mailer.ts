@@ -29,6 +29,7 @@ async function sendEmail(payload: SendMailOptions) {
     transporter.sendMail(payload, (err, info) => {
         if (err) {
             log.error("Error sending email");
+            log.error(err);
             return;
         }
         log.info("Mail sent successfully");

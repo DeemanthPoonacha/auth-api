@@ -7,9 +7,10 @@ import {
     signAccessToken,
     signRefreshToken,
 } from "../setvices/auth.service";
-import { get } from "lodash";
+import { get, omit } from "lodash";
 import { verifyJwt } from "../utils/jwtUtils";
 import log from "../utils/logger";
+import { privateUserFields } from "../models/user.model";
 
 export async function createSessionHandler(
     req: Request<{}, {}, CreateSessionInput>,
@@ -56,8 +57,8 @@ export async function createSessionHandler(
         sameSite: "strict",
         secure: false,
     });
-
-    return res.send({ accessToken, refreshToken });
+    const userPayload = omit(user.toJSON(), privateUserFields);
+    return res.send({ accessToken, refreshToken, ...userPayload });
 }
 
 export async function refreshAccessTokenHandler(req: Request, res: Response) {
