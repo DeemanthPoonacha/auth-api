@@ -8,10 +8,12 @@ import connectToDb from "./utils/dbUtils";
 import deserializeUser from "./middlewares/deserializeUser";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
 
 const app: Express = express();
 
 //middlewares
+app.use(bodyParser.json({ limit: "10mb" }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(

@@ -12,6 +12,10 @@ export function findUserByEmail(email: string) {
     return UserModel.findOne({ email });
 }
 
-export function deleteUserById(id: string) {
-    return UserModel.deleteOne({ _id: id });
+export function findAndUpdateUserById(_id: string, update: Partial<User>) {
+    return UserModel.findOneAndUpdate({ _id }, update);
+}
+
+export function deleteUserById(_id: string) {
+    return UserModel.deleteOne({ _id });
 }

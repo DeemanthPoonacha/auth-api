@@ -5,6 +5,7 @@ import {
     forgotPasswordSchema,
     resendVerificationSchema,
     resetPasswordSchema,
+    updateUserSchema,
     verifyUserSchema,
 } from "../schemas/user.schema";
 import {
@@ -14,6 +15,7 @@ import {
     getCurrentUserHandler,
     resendVerificationHandler,
     resetPasswordHandler,
+    updateUserHandler,
     verifyUserHandler,
 } from "../controllers/user.controller";
 import requireUser from "../middlewares/requireUser";
@@ -36,6 +38,14 @@ userRouter.post(
     USERS_API_PATH,
     validateResource(createUserSchema),
     createUserHandler
+);
+
+// update user
+userRouter.patch(
+    USERS_API_PATH,
+    requireUser,
+    validateResource(updateUserSchema),
+    updateUserHandler
 );
 
 // Resend verification email

@@ -4,11 +4,13 @@ import {
     ForgotPasswordInput,
     ResendVerificationInput,
     ResetPasswordInput,
+    UpdateUserInput,
     VerifyUserInput,
 } from "../schemas/user.schema";
 import {
     createUser,
     deleteUserById,
+    findAndUpdateUserById,
     findUserByEmail,
     findUserById,
 } from "../setvices/user.service";
@@ -19,6 +21,7 @@ import config from "config";
 import { CurrentUser } from "../types/user";
 import { sendVerificationMail } from "../utils/mailer";
 import { sendPasswordResetMail } from "../utils/mailer";
+import { isEmpty } from "lodash";
 export const senderMailId = config.get<string>("senderMailId");
 
 export async function createUserHandler(
@@ -166,6 +169,30 @@ export async function getCurrentUserHandler(req: Request, res: Response) {
     const user = await findUserById(res.locals.user?._id);
 
     return res.send(user?.toJSON());
+}
+
+export async function updateUserHandler(
+    req: Request<{}, {}, UpdateUserInput>,
+    res: Response
+) {
+    const body = req.body;
+    const message = "Couldn't update user";
+
+    if (isEmpty(body)) return res.status(422).send(message);
+
+    const user: CurrentUser = res.locals.user;
+    if (!user) {
+        log.info("User not logged in");
+        return res.status(401).send(message);
+    }
+
+    const result = await findAndUpdateUserById(String(user._id), body);
+    if (!result) {
+        log.info("User not found in DB");
+        return res.status(400).send(message);
+    }
+
+    return res.send("User updated successfully!");
 }
 
 export async function deleteUserHandler(req: Request, res: Response) {

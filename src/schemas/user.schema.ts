@@ -23,6 +23,16 @@ export const createUserSchema = object({
 
 export type CreateUserInput = TypeOf<typeof createUserSchema>["body"];
 
+export const updateUserSchema = object({
+    body: object({
+        fullName: string().optional(),
+        email: string().email("Invalid email address!").optional(),
+        image: string().optional(),
+    }),
+});
+
+export type UpdateUserInput = TypeOf<typeof updateUserSchema>["body"];
+
 export const resendVerificationSchema = object({
     params: object({
         id: string({
