@@ -1,6 +1,6 @@
 import express from "express";
 import validateResource from "../middlewares/validateResource";
-import { createSessionSchema } from "../scemas/auth.schema";
+import { createSessionSchema } from "../schemas/auth.schema";
 import {
     createSessionHandler,
     invalidateSessionHandler,

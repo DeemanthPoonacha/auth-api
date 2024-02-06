@@ -5,7 +5,7 @@ import {
     ResendVerificationInput,
     ResetPasswordInput,
     VerifyUserInput,
-} from "../scemas/user.schema";
+} from "../schemas/user.schema";
 import {
     createUser,
     deleteUserById,
@@ -163,7 +163,9 @@ export async function resetPasswordHandler(
 }
 
 export async function getCurrentUserHandler(req: Request, res: Response) {
-    return res.send(res.locals.user);
+    const user = await findUserById(res.locals.user?._id);
+
+    return res.send(user?.toJSON());
 }
 
 export async function deleteUserHandler(req: Request, res: Response) {

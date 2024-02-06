@@ -6,7 +6,7 @@ import {
     resendVerificationSchema,
     resetPasswordSchema,
     verifyUserSchema,
-} from "../scemas/user.schema";
+} from "../schemas/user.schema";
 import {
     createUserHandler,
     deleteUserHandler,

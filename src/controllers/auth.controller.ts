@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateSessionInput } from "../scemas/auth.schema";
+import { CreateSessionInput } from "../schemas/auth.schema";
 import { findUserByEmail, findUserById } from "../setvices/user.service";
 import {
     findSessionById,

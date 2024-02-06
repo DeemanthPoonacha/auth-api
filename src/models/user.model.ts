@@ -17,6 +17,7 @@ export const privateUserFields = [
     "verificationCode",
     "passwordResetCode",
     "verified",
+    "image",
 ] as const;
 
 @index({ email: 1 })
@@ -46,6 +47,9 @@ export class User {
 
     @prop({ required: true })
     password: string;
+
+    @prop({ required: false })
+    image: string;
 
     @prop({ required: true, default: () => uuidv4() })
     verificationCode: string;
