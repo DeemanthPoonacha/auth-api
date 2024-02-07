@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { verifyJwt } from "../utils/jwtUtils";
 import { get } from "lodash";
+import { reIssueAccessToken } from "../setvices/auth.service";
 
 export default async function deserializeUser(
     req: Request,
@@ -10,11 +11,9 @@ export default async function deserializeUser(
     const accessToken =
         get(req, "cookies.accessToken") ||
         get(req, "headers.authorization", "").replace(/^Bearer\s/, "");
-    console.log({
-        accessToken,
-        cookie: get(req, "cookies.accessToken"),
-        auth: get(req, "headers.authorization"),
-    });
+
+    const refreshToken =
+        get(req, "cookies.refreshToken") || get(req, "headers.x-refresh");
 
     if (!accessToken) return next();
 
@@ -22,7 +21,29 @@ export default async function deserializeUser(
 
     if (decoded) {
         res.locals.user = decoded;
+        return next();
     }
 
+    if (!decoded && refreshToken) {
+        const newAccessToken = await reIssueAccessToken({ refreshToken });
+
+        if (newAccessToken) {
+            res.cookie("accessToken", newAccessToken, {
+                maxAge: 15 * 60 * 1000, //15 minutes
+                httpOnly: true,
+                domain: "localhost",
+                path: "/",
+                sameSite: "strict",
+                secure: false,
+            });
+            const decoded = verifyJwt(
+                newAccessToken as string,
+                "accessTokenPublicKey"
+            );
+
+            res.locals.user = decoded;
+            return next();
+        }
+    }
     return next();
 }

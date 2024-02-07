@@ -29,9 +29,10 @@ export function verifyJwt<T>(
 
     try {
         const decoded = jwt.verify(token, publicKey) as T;
+        log.info(`${keyName.replace("PublicKey", "")} valid`);
         return decoded;
-    } catch (error) {
-        log.error("Error verifying token");
+    } catch (error: any) {
+        log.error(`${keyName.replace("PublicKey", "")} invalid`);
         return null;
     }
 }

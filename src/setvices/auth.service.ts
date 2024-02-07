@@ -1,9 +1,11 @@
 import { DocumentType } from "@typegoose/typegoose";
 import { User, privateUserFields } from "../models/user.model";
-import { signJwt } from "../utils/jwtUtils";
+import { signJwt, verifyJwt } from "../utils/jwtUtils";
 import SessionModel from "../models/session.model";
 import { omit } from "lodash";
 import config from "config";
+import log from "../utils/logger";
+import { findUserById } from "./user.service";
 
 export function createSession({ userId }: { userId: string }) {
     return SessionModel.create({ user: userId });
@@ -45,4 +47,37 @@ export async function invalidateUserSessions({ userId }: { userId: string }) {
         { $set: { valid: false } }
     );
     return result.modifiedCount;
+}
+
+export async function reIssueAccessToken({
+    refreshToken,
+}: {
+    refreshToken: string;
+}) {
+    const decoded = verifyJwt<{ session: string }>(
+        refreshToken,
+        "refreshTokenPublicKey"
+    );
+
+    if (!decoded) {
+        log.info("Unable to decode refresh token");
+        return false;
+    }
+
+    const session = await findSessionById(decoded.session);
+
+    if (!session || !session.valid) {
+        log.info("Session not found or invalid");
+        return false;
+    }
+
+    const user = await findUserById(String(session.user));
+    if (!user) {
+        log.info("User not found");
+        return false;
+    }
+    const accessToken = signAccessToken(user);
+    log.info("Reissuing access token");
+
+    return accessToken;
 }

@@ -1,14 +1,13 @@
 import { Request, Response } from "express";
 import { CreateSessionInput } from "../schemas/auth.schema";
-import { findUserByEmail, findUserById } from "../setvices/user.service";
+import { findUserByEmail } from "../setvices/user.service";
 import {
-    findSessionById,
     invalidateUserSessions,
+    reIssueAccessToken,
     signAccessToken,
     signRefreshToken,
 } from "../setvices/auth.service";
 import { get, omit } from "lodash";
-import { verifyJwt } from "../utils/jwtUtils";
 import log from "../utils/logger";
 import { privateUserFields } from "../models/user.model";
 
@@ -65,30 +64,11 @@ export async function refreshAccessTokenHandler(req: Request, res: Response) {
     const refreshToken =
         get(req, "cookie.refreshToken") ||
         (get(req, "headers.x-refresh") as string);
-    const decoded = verifyJwt<{ session: string }>(
-        refreshToken,
-        "refreshTokenPublicKey"
-    );
-
-    const message = "could not refresh access token";
-    if (!decoded) {
-        log.info("Unable to decode refresh token");
+    const accessToken = await reIssueAccessToken({ refreshToken });
+    if (!accessToken) {
+        const message = "could not refresh access token";
         return res.status(400).send(message);
     }
-
-    const session = await findSessionById(decoded.session);
-
-    if (!session || !session.valid) {
-        log.info("Session not found or invalid");
-        return res.status(400).send(message);
-    }
-
-    const user = await findUserById(String(session.user));
-    if (!user) {
-        log.info("User not found");
-        return res.status(400).send(message);
-    }
-    const accessToken = signAccessToken(user);
     return res.send({ accessToken });
 }
 
