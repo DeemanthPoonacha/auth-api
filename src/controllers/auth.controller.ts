@@ -10,6 +10,7 @@ import {
 import { get, omit } from "lodash";
 import log from "../utils/logger";
 import { privateUserFields } from "../models/user.model";
+import config from "config";
 
 export async function createSessionHandler(
     req: Request<{}, {}, CreateSessionInput>,
@@ -39,8 +40,11 @@ export async function createSessionHandler(
 
     const refreshToken = await signRefreshToken({ userId: String(user._id) });
 
+    const refreshMaxAge = 365 * 24 * 60 * 60 * 1000; //1 Year
+    const accessMaxAge = 15 * 60 * 1000; //15 minutes
+
     res.cookie("accessToken", accessToken, {
-        maxAge: 15 * 60 * 1000, //15 minutes
+        maxAge: accessMaxAge,
         httpOnly: true,
         domain: "localhost",
         path: "/",
@@ -49,7 +53,7 @@ export async function createSessionHandler(
     });
 
     res.cookie("refreshToken", refreshToken, {
-        maxAge: 365 * 24 * 60 * 60 * 1000, //1 Year
+        maxAge: refreshMaxAge,
         httpOnly: true,
         domain: "localhost",
         path: "/",

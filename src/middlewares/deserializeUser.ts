@@ -12,19 +12,19 @@ export default async function deserializeUser(
         get(req, "cookies.accessToken") ||
         get(req, "headers.authorization", "").replace(/^Bearer\s/, "");
 
+    if (accessToken) {
+        const decoded = verifyJwt(accessToken, "accessTokenPublicKey");
+
+        if (decoded) {
+            res.locals.user = decoded;
+            return next();
+        }
+    }
+
     const refreshToken =
         get(req, "cookies.refreshToken") || get(req, "headers.x-refresh");
 
-    if (!accessToken) return next();
-
-    const decoded = verifyJwt(accessToken, "accessTokenPublicKey");
-
-    if (decoded) {
-        res.locals.user = decoded;
-        return next();
-    }
-
-    if (!decoded && refreshToken) {
+    if (refreshToken) {
         const newAccessToken = await reIssueAccessToken({ refreshToken });
 
         if (newAccessToken) {
