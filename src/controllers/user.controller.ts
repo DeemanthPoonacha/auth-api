@@ -21,7 +21,8 @@ import config from "config";
 import { CurrentUser } from "../types/user";
 import { sendVerificationMail } from "../utils/mailer";
 import { sendPasswordResetMail } from "../utils/mailer";
-import { isEmpty } from "lodash";
+import { isEmpty, omit } from "lodash";
+import { privateUserFields } from "../models/user.model";
 export const senderMailId = config.get<string>("senderMailId");
 
 export async function createUserHandler(
@@ -167,8 +168,8 @@ export async function resetPasswordHandler(
 
 export async function getCurrentUserHandler(req: Request, res: Response) {
     const user = await findUserById(res.locals.user?._id);
-
-    return res.send(user?.toJSON());
+    const payload = omit(user?.toJSON(), privateUserFields);
+    return res.send(payload);
 }
 
 export async function updateUserHandler(

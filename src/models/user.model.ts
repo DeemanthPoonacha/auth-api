@@ -17,7 +17,6 @@ export const privateUserFields = [
     "verificationCode",
     "passwordResetCode",
     "verified",
-    "image",
 ] as const;
 
 @index({ email: 1 })
