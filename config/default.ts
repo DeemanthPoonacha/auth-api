@@ -1,6 +1,7 @@
 export default {
     port: 8080,
-    origin: "http://localhost:3023",
+    clientOrigin: "http://localhost:3023",
+    serverOrigin: "http://localhost:8080",
     dbUri: "",
     logLevel: "info",
     senderMailId: "admin@auth.com",
@@ -8,13 +9,4 @@ export default {
     refreshTokenTtl: "1y",
     accessTokenPrivateKey: "",
     refreshTokenPrivateKey: "",
-    smtp: {
-        auth: {
-            user: "u34mmkjbmmthpq2l@ethereal.email",
-            pass: "gw3YzT6naCgs98p6Bv",
-        },
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false,
-    },
 };

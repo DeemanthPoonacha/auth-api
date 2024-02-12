@@ -1,8 +1,10 @@
 import nodemailer, { SendMailOptions } from "nodemailer";
 import log from "./logger";
 import config from "config";
-import { senderMailId } from "../controllers/user.controller";
 import { UserInDb } from "../types/user";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
+
+const senderMailId = config.get<string>("senderMailId");
 
 async function generateTestCreds() {
     const testCreds = await nodemailer.createTestAccount();
@@ -11,17 +13,9 @@ async function generateTestCreds() {
 }
 
 // generateTestCreds();
-const smtp = config.get<{
-    auth: {
-        user: string;
-        pass: string;
-    };
-    host: string;
-    port: number;
-    secure: boolean;
-}>("smtp");
-// log.info("smtp: ");
-// log.info(smtp);
+const smtp = config.get<SMTPTransport.Options>("smtp");
+log.info("smtp: ");
+log.info(smtp);
 
 const transporter = nodemailer.createTransport(smtp);
 
@@ -39,11 +33,12 @@ async function sendEmail(payload: SendMailOptions) {
 }
 
 export async function sendVerificationMail(user: UserInDb) {
+    const serverOrigin = config.get("serverOrigin");
     await sendEmail({
         from: senderMailId,
         to: user.email,
         subject: "Please verify your account",
-        html: `<p>To verify your email address, <a href="http://localhost:8080/api/users/${user._id}/verify/${user.verificationCode}">Click Here</a>.</p>`,
+        html: `<p>To verify your email address, <a href="${serverOrigin}/api/users/${user._id}/verify/${user.verificationCode}">Click Here</a>.</p>`,
     });
 }
 
@@ -51,7 +46,7 @@ export async function sendPasswordResetMail(
     user: UserInDb,
     passwordResetCode: string
 ) {
-    const frontendOrigin = config.get("origin");
+    const frontendOrigin = config.get("clientOrigin");
     await sendEmail({
         from: senderMailId,
         to: user.email,

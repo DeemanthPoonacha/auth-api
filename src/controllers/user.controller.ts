@@ -23,7 +23,6 @@ import { sendVerificationMail } from "../utils/mailer";
 import { sendPasswordResetMail } from "../utils/mailer";
 import { isEmpty, omit } from "lodash";
 import { privateUserFields } from "../models/user.model";
-export const senderMailId = config.get<string>("senderMailId");
 
 export async function createUserHandler(
     req: Request<{}, {}, CreateUserInput>,
@@ -53,7 +52,7 @@ export async function resendVerificationHandler(
         const user = await findUserById(id);
 
         if (!user) return res.send("User not found!");
-        const frontendOrigin = config.get("origin");
+        const frontendOrigin = config.get("clientOrigin");
         if (user.verified)
             return res.send(`
         <div>
@@ -78,7 +77,7 @@ export async function verifyUserHandler(
         const user = await findUserById(id);
 
         if (!user) return res.send("User not found!");
-        const frontendOrigin = config.get("origin");
+        const frontendOrigin = config.get("clientOrigin");
         if (user.verified)
             return res.send(`
         <div>

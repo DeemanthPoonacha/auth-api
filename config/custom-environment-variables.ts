@@ -4,4 +4,15 @@ export default {
     accessTokenPublicKey: "ACCESS_TOKEN_PUBLIC_KEY",
     refreshTokenPrivateKey: "REFRESH_TOKEN_PRIVATE_KEY",
     refreshTokenPublicKey: "REFRESH_TOKEN_PUBLIC_KEY",
+
+    smtp: {
+        auth: {
+            user: "MAILER_USERNAME",
+            pass: "MAILER_PASSWORD",
+        },
+        host: "MAILER_HOST",
+        service: "MAILER_SERVICE",
+        port: "MAILER_PORT",
+        secure: "MAILER_SECURE",
+    },
 };
