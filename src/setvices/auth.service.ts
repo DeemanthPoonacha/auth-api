@@ -18,7 +18,7 @@ export async function signRefreshToken({ userId }: { userId: string }) {
         { session: session._id },
         "refreshTokenPrivateKey",
         {
-            expiresIn: config.get("refreshTokenTtl"),
+            expiresIn: config.get("refreshTokenTtl") || "1y",
         }
     );
     return refreshToken;
@@ -28,7 +28,7 @@ export function signAccessToken(user: DocumentType<User>) {
     const payload = omit(user.toJSON(), [...privateUserFields, "image"]);
 
     const accessToken = signJwt(payload, "accessTokenPrivateKey", {
-        expiresIn: config.get("accessTokenTtl"),
+        expiresIn: config.get("accessTokenTtl") || "15m",
     });
     return accessToken;
 }

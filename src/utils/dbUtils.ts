@@ -3,7 +3,7 @@ import config from "config";
 import log from "./logger";
 
 export default async function connectToDb() {
-    const dbUri = config.get<string>("dbUri");
+    const dbUri = config.get<string>("dbUri") || "mongodb://localhost:27017";
 
     try {
         await mongoose.connect(dbUri, { dbName: "authentication_db" });

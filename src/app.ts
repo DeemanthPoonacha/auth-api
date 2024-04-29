@@ -18,7 +18,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(
     cors({
-        origin: config.get("clientOrigin"),
+        origin: config.get("clientOrigin") || "http://localhost:3023",
         credentials: true,
     })
 );
@@ -26,7 +26,7 @@ app.use(deserializeUser);
 app.use(router);
 
 app.get("/", (req, res) => res.send("Express Authentication on Vercel"));
-const port = config.get("port");
+const port = config.get("port") || 8080;
 app.listen(port, () => {
     log.info(`[server]: Server is running at http://localhost:${port}`);
     connectToDb();

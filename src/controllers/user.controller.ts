@@ -52,7 +52,8 @@ export async function resendVerificationHandler(
         const user = await findUserById(id);
 
         if (!user) return res.send("User not found!");
-        const frontendOrigin = config.get("clientOrigin");
+        const frontendOrigin =
+            config.get("clientOrigin") || "http://localhost:3023";
         if (user.verified)
             return res.send(`
         <div>
@@ -77,7 +78,8 @@ export async function verifyUserHandler(
         const user = await findUserById(id);
 
         if (!user) return res.send("User not found!");
-        const frontendOrigin = config.get("clientOrigin");
+        const frontendOrigin =
+            config.get("clientOrigin") || "http://localhost:3023";
         if (user.verified)
             return res.send(`
         <div>
