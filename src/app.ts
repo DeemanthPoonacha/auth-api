@@ -9,8 +9,10 @@ import deserializeUser from "./middlewares/deserializeUser";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
+import path from "path";
 
 const app: Express = express();
+process.env["NODE_CONFIG_DIR"] = path.join(path.resolve("./"), "config/");
 
 //middlewares
 app.use(bodyParser.json({ limit: "10mb" }));

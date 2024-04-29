@@ -14,7 +14,9 @@ const deserializeUser_1 = __importDefault(require("./middlewares/deserializeUser
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const body_parser_1 = __importDefault(require("body-parser"));
+const path_1 = __importDefault(require("path"));
 const app = (0, express_1.default)();
+process.env["NODE_CONFIG_DIR"] = path_1.default.join(path_1.default.resolve("./"), "config/");
 //middlewares
 app.use(body_parser_1.default.json({ limit: "10mb" }));
 app.use((0, cookie_parser_1.default)());
