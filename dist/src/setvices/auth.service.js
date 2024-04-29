@@ -28,7 +28,7 @@ function signRefreshToken({ userId }) {
     return __awaiter(this, void 0, void 0, function* () {
         const session = yield createSession({ userId });
         const refreshToken = (0, jwtUtils_1.signJwt)({ session: session._id }, "refreshTokenPrivateKey", {
-            expiresIn: config_1.default.get("refreshTokenTtl"),
+            expiresIn: config_1.default.get("refreshTokenTtl") || "1y",
         });
         return refreshToken;
     });
@@ -37,7 +37,7 @@ exports.signRefreshToken = signRefreshToken;
 function signAccessToken(user) {
     const payload = (0, lodash_1.omit)(user.toJSON(), [...user_model_1.privateUserFields, "image"]);
     const accessToken = (0, jwtUtils_1.signJwt)(payload, "accessTokenPrivateKey", {
-        expiresIn: config_1.default.get("accessTokenTtl"),
+        expiresIn: config_1.default.get("accessTokenTtl") || "15m",
     });
     return accessToken;
 }

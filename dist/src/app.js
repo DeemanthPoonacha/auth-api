@@ -20,13 +20,13 @@ app.use(body_parser_1.default.json({ limit: "10mb" }));
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
 app.use((0, cors_1.default)({
-    origin: config_1.default.get("clientOrigin"),
+    origin: config_1.default.get("clientOrigin") || "http://localhost:3023",
     credentials: true,
 }));
 app.use(deserializeUser_1.default);
 app.use(routes_1.default);
 app.get("/", (req, res) => res.send("Express Authentication on Vercel"));
-const port = config_1.default.get("port");
+const port = config_1.default.get("port") || 8080;
 app.listen(port, () => {
     logger_1.default.info(`[server]: Server is running at http://localhost:${port}`);
     (0, dbUtils_1.default)();

@@ -17,7 +17,7 @@ const config_1 = __importDefault(require("config"));
 const logger_1 = __importDefault(require("./logger"));
 function connectToDb() {
     return __awaiter(this, void 0, void 0, function* () {
-        const dbUri = config_1.default.get("dbUri");
+        const dbUri = config_1.default.get("dbUri") || "mongodb://localhost:27017";
         try {
             yield mongoose_1.default.connect(dbUri, { dbName: "authentication_db" });
             logger_1.default.info("Connected to database");

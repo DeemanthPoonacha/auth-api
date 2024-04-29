@@ -48,7 +48,7 @@ function resendVerificationHandler(req, res) {
             const user = yield (0, user_service_1.findUserById)(id);
             if (!user)
                 return res.send("User not found!");
-            const frontendOrigin = config_1.default.get("clientOrigin");
+            const frontendOrigin = config_1.default.get("clientOrigin") || "http://localhost:3023";
             if (user.verified)
                 return res.send(`
         <div>
@@ -71,7 +71,7 @@ function verifyUserHandler(req, res) {
             const user = yield (0, user_service_1.findUserById)(id);
             if (!user)
                 return res.send("User not found!");
-            const frontendOrigin = config_1.default.get("clientOrigin");
+            const frontendOrigin = config_1.default.get("clientOrigin") || "http://localhost:3023";
             if (user.verified)
                 return res.send(`
         <div>
