@@ -25,8 +25,11 @@ app.use(
 app.use(deserializeUser);
 app.use(router);
 
+app.get("/", (req, res) => res.send("Express Authentication on Vercel"));
 const port = config.get("port");
 app.listen(port, () => {
     log.info(`[server]: Server is running at http://localhost:${port}`);
     connectToDb();
 });
+
+export default app;

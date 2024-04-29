@@ -25,8 +25,10 @@ app.use((0, cors_1.default)({
 }));
 app.use(deserializeUser_1.default);
 app.use(routes_1.default);
+app.get("/", (req, res) => res.send("Express Authentication on Vercel"));
 const port = config_1.default.get("port");
 app.listen(port, () => {
     logger_1.default.info(`[server]: Server is running at http://localhost:${port}`);
     (0, dbUtils_1.default)();
 });
+exports.default = app;
