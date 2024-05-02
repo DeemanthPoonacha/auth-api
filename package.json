@@ -6,9 +6,14 @@
     "scripts": {
         "build": "npx tsc",
         "start": "node dist/app.js",
-        "dev": "ts-node-dev --respawn --transpile-only src/app.ts"
+        "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
+        "ts.check": "tsc --project tsconfig.json",
+        "add-build": "git add -f dist"
     },
-    "type": "module",
+    "pre-commit": [
+        "build",
+        "add-build"
+    ],
     "keywords": [],
     "author": "",
     "license": "ISC",
@@ -26,6 +31,7 @@
         "mongoose": "^8.0.3",
         "nodemailer": "^6.9.7",
         "pino": "^8.17.1",
+        "pre-commit": "^1.2.2",
         "uuid": "^9.0.1",
         "zod": "^3.22.4"
     },
