@@ -35,7 +35,7 @@ const corsConfig = {
 };
 app.use(function (req, res, next) {
     console.log("🚀 ~ req.body before:", req.body);
-    if (req.method === "POST")
+    if (req.body)
         req.body = JSON.parse(req.body);
     console.log("🚀 ~ req.body after:", req.body);
     next();

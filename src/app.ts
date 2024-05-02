@@ -34,7 +34,7 @@ const corsConfig: CorsOptions = {
 
 app.use(function (req, res, next) {
     console.log("🚀 ~ req.body before:", req.body);
-    if (req.method === "PATCH") req.body = JSON.parse(req.body);
+    if (req.body) req.body = JSON.parse(req.body);
     console.log("🚀 ~ req.body after:", req.body);
     next();
 });
