@@ -31,20 +31,51 @@ const corsConfig: CorsOptions = {
         "Accept",
     ],
 };
-app.use(cors(corsConfig));
-// app.use(function (req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "http://localhost:3023");
-//     res.header(
-//         "Access-Control-Allow-Methods",
-//         "GET,PUT,PATCH,POST,DELETE,OPTIONS"
-//     );
-//     res.header(
-//         "Access-Control-Allow-Headers",
-//         "Content-Type, Authorization, Content-Length, X-Requested-With, Accept"
-//     );
-//     res.header("Access-Control-Allow-Credentials", "true");
-//     next();
-// });
+
+app.use(function (req, res, next) {
+    console.log("🚀 ~ req.body before:", req.body);
+    if (req.method === "PATCH") req.body = JSON.parse(req.body);
+    console.log("🚀 ~ req.body after:", req.body);
+    next();
+});
+// app.use(cors(corsConfig));
+app.use(function (req, res, next) {
+    // res.header(
+    //     "Access-Control-Allow-Origin",
+    //     config.get("clientOrigin") || "http://localhost:3023"
+    // );
+    // res.header(
+    //     "Access-Control-Allow-Methods",
+    //     "GET,PUT,PATCH,POST,DELETE,OPTIONS"
+    // );
+    // res.header(
+    //     "Access-Control-Allow-Headers",
+    //     "Content-Type, Authorization, Content-Length, X-Requested-With, Accept"
+    // );
+    // res.header("Access-Control-Allow-Credentials", "true");
+
+    // res.setHeader("Access-Control-Allow-Credentials", "true");
+    // res.setHeader("Access-Control-Allow-Origin", "*");
+    // // another common pattern
+    // // res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+    // res.setHeader(
+    //     "Access-Control-Allow-Methods",
+    //     "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+    // );
+    // res.setHeader(
+    //     "Access-Control-Allow-Headers",
+    //     "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+    // );
+    // if (req.method === "OPTIONS") {
+    //     res.status(200).end();
+    //     return;
+    // }
+    console.log("🚀 ~ res:", req.originalUrl);
+    next();
+});
+app.options("/*", (_, res) => {
+    res.sendStatus(200);
+});
 console.log("Cors configuration", corsConfig);
 
 app.use(deserializeUser);
