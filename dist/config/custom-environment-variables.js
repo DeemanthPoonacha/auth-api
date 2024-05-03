@@ -7,6 +7,7 @@ exports.default = {
     refreshTokenPrivateKey: "REFRESH_TOKEN_PRIVATE_KEY",
     refreshTokenPublicKey: "REFRESH_TOKEN_PUBLIC_KEY",
     clientOrigin: "CLIENT_ORIGIN",
+    serverOrigin: "SERVER_ORIGIN",
     smtp: {
         auth: {
             user: "MAILER_USERNAME",
