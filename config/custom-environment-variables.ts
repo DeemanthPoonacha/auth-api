@@ -4,6 +4,7 @@ export default {
     accessTokenPublicKey: "ACCESS_TOKEN_PUBLIC_KEY",
     refreshTokenPrivateKey: "REFRESH_TOKEN_PRIVATE_KEY",
     refreshTokenPublicKey: "REFRESH_TOKEN_PUBLIC_KEY",
+    clientOrigin: "CLIENT_ORIGIN",
 
     smtp: {
         auth: {
