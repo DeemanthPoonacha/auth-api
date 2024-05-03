@@ -48,8 +48,8 @@ export async function createSessionHandler(
         httpOnly: true,
         domain: "localhost",
         path: "/",
-        sameSite: "strict",
-        secure: false,
+        sameSite: "none",
+        secure: true,
     });
 
     res.cookie("refreshToken", refreshToken, {
@@ -57,8 +57,8 @@ export async function createSessionHandler(
         httpOnly: true,
         domain: "localhost",
         path: "/",
-        sameSite: "strict",
-        secure: false,
+        sameSite: "none",
+        secure: true,
     });
     const userPayload = omit(user.toJSON(), privateUserFields);
     return res.send({ accessToken, refreshToken, ...userPayload });

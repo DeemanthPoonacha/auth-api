@@ -47,16 +47,16 @@ function createSessionHandler(req, res) {
             httpOnly: true,
             domain: "localhost",
             path: "/",
-            sameSite: "strict",
-            secure: false,
+            sameSite: "none",
+            secure: true,
         });
         res.cookie("refreshToken", refreshToken, {
             maxAge: refreshMaxAge,
             httpOnly: true,
             domain: "localhost",
             path: "/",
-            sameSite: "strict",
-            secure: false,
+            sameSite: "none",
+            secure: true,
         });
         const userPayload = (0, lodash_1.omit)(user.toJSON(), user_model_1.privateUserFields);
         return res.send(Object.assign({ accessToken, refreshToken }, userPayload));
