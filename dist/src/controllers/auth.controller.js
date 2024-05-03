@@ -18,6 +18,7 @@ const auth_service_1 = require("../setvices/auth.service");
 const lodash_1 = require("lodash");
 const logger_1 = __importDefault(require("../utils/logger"));
 const user_model_1 = require("../models/user.model");
+const config_1 = __importDefault(require("config"));
 function createSessionHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { email, password } = req.body;
@@ -42,24 +43,9 @@ function createSessionHandler(req, res) {
         const refreshToken = yield (0, auth_service_1.signRefreshToken)({ userId: String(user._id) });
         const refreshMaxAge = 365 * 24 * 60 * 60 * 1000; //1 Year
         const accessMaxAge = 15 * 60 * 1000; //15 minutes
-        res.cookie("accessToken", accessToken, {
-            maxAge: accessMaxAge,
-            httpOnly: true,
-            // domain: "auth-frontend-cyan.vercel.app",
-            domain: "auth-api-kmqg.onrender.com",
-            path: "/",
-            sameSite: "none",
-            secure: true,
-        });
-        res.cookie("refreshToken", refreshToken, {
-            maxAge: refreshMaxAge,
-            httpOnly: true,
-            // domain: "auth-frontend-cyan.vercel.app",
-            domain: "auth-api-kmqg.onrender.com",
-            path: "/",
-            sameSite: "none",
-            secure: true,
-        });
+        const cookieConfig = config_1.default.get("cookieConfig");
+        res.cookie("accessToken", accessToken, Object.assign({ maxAge: accessMaxAge }, cookieConfig));
+        res.cookie("refreshToken", refreshToken, Object.assign({ maxAge: refreshMaxAge }, cookieConfig));
         const userPayload = (0, lodash_1.omit)(user.toJSON(), user_model_1.privateUserFields);
         return res.send(Object.assign({ accessToken, refreshToken }, userPayload));
     });
@@ -87,8 +73,9 @@ function invalidateSessionHandler(req, res) {
         logger_1.default.info(`${invalidatedCount} sessions Invalidated`);
         if (!invalidatedCount)
             return res.send("No sessions found!");
-        res.clearCookie("accessToken");
-        res.clearCookie("refreshToken");
+        const cookieConfig = config_1.default.get("cookieConfig");
+        res.clearCookie("accessToken", cookieConfig);
+        res.clearCookie("refreshToken", cookieConfig);
         return res.send({ accessToken: null, refreshToken: null });
     });
 }

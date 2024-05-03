@@ -9,4 +9,11 @@ exports.default = {
     refreshTokenTtl: "1y",
     accessTokenPrivateKey: "",
     refreshTokenPrivateKey: "",
+    cookieConfig: {
+        httpOnly: true,
+        domain: "auth-api-kmqg.onrender.com",
+        path: "/",
+        sameSite: "none",
+        secure: true,
+    },
 };

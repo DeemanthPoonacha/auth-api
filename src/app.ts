@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
-import express, { Express } from "express";
+import express, { CookieOptions, Express } from "express";
 import config from "config";
 import log from "./utils/logger";
 import router from "./routes";
@@ -30,6 +30,9 @@ const corsConfig: CorsOptions = {
         "Accept",
     ],
 };
+const cookieConfig = config.get<CookieOptions>("cookieConfig");
+console.log("🚀 ~ config:", config);
+console.log("🚀 ~ cookieConfig:", cookieConfig);
 console.log("🚀 ~ corsConfig:", corsConfig);
 app.use(cors(corsConfig));
 app.use(deserializeUser);

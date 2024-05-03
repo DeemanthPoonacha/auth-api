@@ -17,4 +17,8 @@ export default {
         port: "MAILER_PORT",
         secure: "MAILER_SECURE",
     },
+
+    cookieConfig: {
+        domain: "SERVER_DOMAIN",
+    },
 };

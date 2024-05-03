@@ -32,6 +32,9 @@ const corsConfig = {
         "Accept",
     ],
 };
+const cookieConfig = config_1.default.get("cookieConfig");
+console.log("🚀 ~ config:", config_1.default);
+console.log("🚀 ~ cookieConfig:", cookieConfig);
 console.log("🚀 ~ corsConfig:", corsConfig);
 app.use((0, cors_1.default)(corsConfig));
 app.use(deserializeUser_1.default);

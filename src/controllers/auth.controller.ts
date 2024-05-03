@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { CookieOptions, Request, Response } from "express";
 import { CreateSessionInput } from "../schemas/auth.schema";
 import { findUserByEmail } from "../setvices/user.service";
 import {
@@ -43,24 +43,16 @@ export async function createSessionHandler(
     const refreshMaxAge = 365 * 24 * 60 * 60 * 1000; //1 Year
     const accessMaxAge = 15 * 60 * 1000; //15 minutes
 
+    const cookieConfig = config.get<CookieOptions>("cookieConfig");
+
     res.cookie("accessToken", accessToken, {
         maxAge: accessMaxAge,
-        httpOnly: true,
-        // domain: "auth-frontend-cyan.vercel.app",
-        domain: "auth-api-kmqg.onrender.com",
-        path: "/",
-        sameSite: "none",
-        secure: true,
+        ...cookieConfig,
     });
 
     res.cookie("refreshToken", refreshToken, {
         maxAge: refreshMaxAge,
-        httpOnly: true,
-        // domain: "auth-frontend-cyan.vercel.app",
-        domain: "auth-api-kmqg.onrender.com",
-        path: "/",
-        sameSite: "none",
-        secure: true,
+        ...cookieConfig,
     });
     const userPayload = omit(user.toJSON(), privateUserFields);
     return res.send({ accessToken, refreshToken, ...userPayload });
@@ -86,7 +78,9 @@ export async function invalidateSessionHandler(req: Request, res: Response) {
     log.info(`${invalidatedCount} sessions Invalidated`);
     if (!invalidatedCount) return res.send("No sessions found!");
 
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
+    const cookieConfig = config.get<CookieOptions>("cookieConfig");
+
+    res.clearCookie("accessToken", cookieConfig);
+    res.clearCookie("refreshToken", cookieConfig);
     return res.send({ accessToken: null, refreshToken: null });
 }
