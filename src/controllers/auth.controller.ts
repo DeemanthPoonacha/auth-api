@@ -46,7 +46,8 @@ export async function createSessionHandler(
     res.cookie("accessToken", accessToken, {
         maxAge: accessMaxAge,
         httpOnly: true,
-        domain: "auth-frontend-cyan.vercel.app",
+        // domain: "auth-frontend-cyan.vercel.app",
+        domain: "auth-api-kmqg.onrender.com",
         path: "/",
         sameSite: "none",
         secure: true,
@@ -55,7 +56,8 @@ export async function createSessionHandler(
     res.cookie("refreshToken", refreshToken, {
         maxAge: refreshMaxAge,
         httpOnly: true,
-        domain: "auth-frontend-cyan.vercel.app",
+        // domain: "auth-frontend-cyan.vercel.app",
+        domain: "auth-api-kmqg.onrender.com",
         path: "/",
         sameSite: "none",
         secure: true,
