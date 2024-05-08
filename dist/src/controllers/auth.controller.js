@@ -13,8 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.invalidateSessionHandler = exports.refreshAccessTokenHandler = exports.createSessionHandler = void 0;
-const user_service_1 = require("../setvices/user.service");
-const auth_service_1 = require("../setvices/auth.service");
+const user_service_1 = require("../services/user.service");
+const auth_service_1 = require("../services/auth.service");
 const lodash_1 = require("lodash");
 const logger_1 = __importDefault(require("../utils/logger"));
 const user_model_1 = require("../models/user.model");

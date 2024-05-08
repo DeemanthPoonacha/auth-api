@@ -13,8 +13,8 @@ import {
     findAndUpdateUserById,
     findUserByEmail,
     findUserById,
-} from "../setvices/user.service";
-import { invalidateUserSessions } from "../setvices/auth.service";
+} from "../services/user.service";
+import { invalidateUserSessions } from "../services/auth.service";
 import log from "../utils/logger";
 import { v4 as uuidv4 } from "uuid";
 import config from "config";

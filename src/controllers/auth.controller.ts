@@ -1,12 +1,12 @@
 import { CookieOptions, Request, Response } from "express";
 import { CreateSessionInput } from "../schemas/auth.schema";
-import { findUserByEmail } from "../setvices/user.service";
+import { findUserByEmail } from "../services/user.service";
 import {
     invalidateUserSessions,
     reIssueAccessToken,
     signAccessToken,
     signRefreshToken,
-} from "../setvices/auth.service";
+} from "../services/auth.service";
 import { get, omit } from "lodash";
 import log from "../utils/logger";
 import { privateUserFields } from "../models/user.model";

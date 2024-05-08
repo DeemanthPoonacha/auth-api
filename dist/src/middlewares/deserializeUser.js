@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const jwtUtils_1 = require("../utils/jwtUtils");
 const lodash_1 = require("lodash");
-const auth_service_1 = require("../setvices/auth.service");
+const auth_service_1 = require("../services/auth.service");
 function deserializeUser(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const accessToken = (0, lodash_1.get)(req, "cookies.accessToken") ||

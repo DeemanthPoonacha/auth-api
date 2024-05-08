@@ -13,8 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUserHandler = exports.updateUserHandler = exports.getCurrentUserHandler = exports.resetPasswordHandler = exports.forgotPasswordHandler = exports.verifyUserHandler = exports.resendVerificationHandler = exports.createUserHandler = void 0;
-const user_service_1 = require("../setvices/user.service");
-const auth_service_1 = require("../setvices/auth.service");
+const user_service_1 = require("../services/user.service");
+const auth_service_1 = require("../services/auth.service");
 const logger_1 = __importDefault(require("../utils/logger"));
 const uuid_1 = require("uuid");
 const config_1 = __importDefault(require("config"));
