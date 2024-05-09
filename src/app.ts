@@ -9,7 +9,7 @@ import deserializeUser from "./middlewares/deserializeUser";
 import cors, { CorsOptions } from "cors";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
-
+import swaggerDocs from "./utils/swagger";
 const app: Express = express();
 
 //middlewares
@@ -42,10 +42,23 @@ app.use((req, res, next) => {
     next();
 });
 
+/**
+ * @openapi
+ * /healthcheck:
+ *  get:
+ *     tags:
+ *     - Healthcheck
+ *     description: Responds if the app is up and running
+ *     responses:
+ *       200:
+ *         description: App is up and running
+ */
+app.get("/healthcheck", (req, res) => res.sendStatus(200));
 app.get("/", (req, res) => res.send("Express Authentication Application!"));
 
-const port = config.get("port");
-app.listen(port, () => {
+const port = config.get("port") as number;
+app.listen(port, async () => {
     log.info(`[server]: Server is running at http://localhost:${port}`);
-    connectToDb();
+    await connectToDb();
+    swaggerDocs(app, port);
 });

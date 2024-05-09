@@ -47,7 +47,8 @@ function createSessionHandler(req, res) {
         res.cookie("accessToken", accessToken, Object.assign({ maxAge: accessMaxAge }, cookieConfig));
         res.cookie("refreshToken", refreshToken, Object.assign({ maxAge: refreshMaxAge }, cookieConfig));
         const userPayload = (0, lodash_1.omit)(user.toJSON(), user_model_1.privateUserFields);
-        return res.send(Object.assign({ accessToken, refreshToken }, userPayload));
+        const loginResponse = Object.assign({ accessToken, refreshToken }, userPayload);
+        return res.send(loginResponse);
     });
 }
 exports.createSessionHandler = createSessionHandler;
@@ -68,11 +69,11 @@ function invalidateSessionHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = (0, lodash_1.get)(res.locals.user, "_id");
         if (!userId)
-            return res.send("User not logged in");
+            return res.status(403).send("User not logged in");
         const invalidatedCount = yield (0, auth_service_1.invalidateUserSessions)({ userId });
         logger_1.default.info(`${invalidatedCount} sessions Invalidated`);
         if (!invalidatedCount)
-            return res.send("No sessions found!");
+            return res.status(403).send("No sessions found!");
         const cookieConfig = config_1.default.get("cookieConfig");
         res.clearCookie("accessToken", cookieConfig);
         res.clearCookie("refreshToken", cookieConfig);

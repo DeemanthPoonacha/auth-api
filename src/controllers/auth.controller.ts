@@ -11,6 +11,7 @@ import { get, omit } from "lodash";
 import log from "../utils/logger";
 import { privateUserFields } from "../models/user.model";
 import config from "config";
+import { CurrentUser } from "../types/user";
 
 export async function createSessionHandler(
     req: Request<{}, {}, CreateSessionInput>,
@@ -54,8 +55,9 @@ export async function createSessionHandler(
         maxAge: refreshMaxAge,
         ...cookieConfig,
     });
-    const userPayload = omit(user.toJSON(), privateUserFields);
-    return res.send({ accessToken, refreshToken, ...userPayload });
+    const userPayload: CurrentUser = omit(user.toJSON(), privateUserFields);
+    const loginResponse = { accessToken, refreshToken, ...userPayload };
+    return res.send(loginResponse);
 }
 
 export async function refreshAccessTokenHandler(req: Request, res: Response) {
@@ -72,11 +74,11 @@ export async function refreshAccessTokenHandler(req: Request, res: Response) {
 
 export async function invalidateSessionHandler(req: Request, res: Response) {
     const userId = get(res.locals.user, "_id");
-    if (!userId) return res.send("User not logged in");
+    if (!userId) return res.status(403).send("User not logged in");
 
     const invalidatedCount = await invalidateUserSessions({ userId });
     log.info(`${invalidatedCount} sessions Invalidated`);
-    if (!invalidatedCount) return res.send("No sessions found!");
+    if (!invalidatedCount) return res.status(403).send("No sessions found!");
 
     const cookieConfig = config.get<CookieOptions>("cookieConfig");
 

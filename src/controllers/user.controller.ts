@@ -76,16 +76,16 @@ export async function verifyUserHandler(
     try {
         const user = await findUserById(id);
 
-        if (!user) return res.send("User not found!");
+        if (!user) return res.status(404).send("User not found!");
         const frontendOrigin = config.get("clientOrigin");
         if (user.verified)
-            return res.send(`
+            return res.status(409).send(`
         <div>
             <p>User already verified!</p>
             <p>To login to your account, <a href="${frontendOrigin}/auth/login">Click Here</a>.</p>
         </div>`);
         if (verificationCode !== user.verificationCode) {
-            return res.send("Invalid verification code");
+            return res.status(400).send("Invalid verification code");
         }
 
         user.verified = true;

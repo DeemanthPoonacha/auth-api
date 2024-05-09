@@ -1,5 +1,37 @@
 import { TypeOf, object, string } from "zod";
 
+/**
+ * @openapi
+ * components:
+ *
+ *  schemas:
+ *
+ *     CreateUserInput:
+ *      type: object
+ *      required:
+ *        - email
+ *        - fullName
+ *        - password
+ *        - passwordConfirm
+ *      properties:
+ *        email:
+ *          type: string
+ *          format: email
+ *          default: jane.doe@example.com
+ *        fullName:
+ *          type: string
+ *          default: Jane Doe
+ *        password:
+ *          type: string
+ *          default: stringPassword123
+ *        passwordConfirm:
+ *          type: string
+ *          default: stringPassword123
+ *
+ *     CreateUserResponse:
+ *      type: string
+ *      default: User created successfully!
+ */
 export const createUserSchema = object({
     body: object({
         fullName: string({
@@ -22,7 +54,32 @@ export const createUserSchema = object({
 });
 
 export type CreateUserInput = TypeOf<typeof createUserSchema>["body"];
-
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *
+ *     UpdateUserInput:
+ *       type: object
+ *       properties:
+ *         fullName:
+ *           type: string
+ *           description: The full name of the user
+ *           default: Jane Doe
+ *         email:
+ *           type: string
+ *           default: jane.doe@example.com
+ *           format: email
+ *           description: The email address of the user
+ *         image:
+ *           type: string
+ *           description: The URL of the user's image
+ *
+ *     UpdateUserResponse:
+ *       type: string
+ *       description: A message indicating the success of the user update operation.
+ *       example: User updated successfully!
+ */
 export const updateUserSchema = object({
     body: object({
         fullName: string().optional(),
@@ -32,6 +89,15 @@ export const updateUserSchema = object({
 });
 
 export type UpdateUserInput = TypeOf<typeof updateUserSchema>["body"];
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     ResendVerificationResponse:
+ *       type: string
+ *       description: A message indicating the result of the resend verification email operation.
+ *       example: Verification mail will be sent to the Email address if registered.
+ */
 
 export const resendVerificationSchema = object({
     params: object({
@@ -58,6 +124,21 @@ export const verifyUserSchema = object({
 
 export type VerifyUserInput = TypeOf<typeof verifyUserSchema>["params"];
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     ForgotPasswordInput:
+ *       type: object
+ *       required:
+ *         - email
+ *       properties:
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: The email address of the user requesting password reset.
+ *           example: jane.doe@example.com
+ */
 export const forgotPasswordSchema = object({
     body: object({
         email: string({
@@ -68,6 +149,36 @@ export const forgotPasswordSchema = object({
 
 export type ForgotPasswordInput = TypeOf<typeof forgotPasswordSchema>["body"];
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     ResetPasswordInput:
+ *       type: object
+ *       properties:
+ *         password:
+ *           type: string
+ *           example: new-password
+ *           description: The new password for the user.
+ *           minLength: 6
+ *         passwordConfirm:
+ *           type: string
+ *           example: new-password
+ *           description: The confirmation of the new password.
+ *       required:
+ *         - id
+ *         - passwordResetCode
+ *     ResetPasswordResponse:
+ *       type: object
+ *       properties:
+ *         path:
+ *           type: string
+ *           description: The path to redirect after successful password reset.
+ *         message:
+ *           type: string
+ *           description: A message indicating the success of the password reset operation.
+ *           example: Password reset successfully!
+ */
 export const resetPasswordSchema = object({
     params: object({
         id: string({
