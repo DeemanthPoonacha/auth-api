@@ -1,11 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RESET_PASSWORD_API_PATH = exports.FORGOT_PASSWORD_API_PATH = exports.VERIFY_USER_API_PATH = exports.RESEND_VERIFICATION_API_PATH = exports.CURRENT_USER_API_PATH = exports.USERS_API_PATH = exports.REFRESH_ACCESS_TOKEN_API_PATH = exports.LOGOUT_API_PATH = exports.LOGIN_API_PATH = exports.SESSIONS_API_PATH = void 0;
+exports.RESET_PASSWORD_API_PATH = exports.FORGOT_PASSWORD_API_PATH = exports.VERIFY_USER_API_PATH = exports.RESEND_VERIFICATION_API_PATH = exports.CURRENT_USER_API_PATH = exports.CHANGE_PASSWORD_API_PATH = exports.USERS_API_PATH = exports.REFRESH_ACCESS_TOKEN_API_PATH = exports.LOGOUT_API_PATH = exports.LOGIN_API_PATH = exports.SESSIONS_API_PATH = void 0;
 exports.SESSIONS_API_PATH = "/api/sessions";
 exports.LOGIN_API_PATH = "/api/sessions";
 exports.LOGOUT_API_PATH = "/api/sessions";
 exports.REFRESH_ACCESS_TOKEN_API_PATH = `${exports.SESSIONS_API_PATH}/refresh`;
 exports.USERS_API_PATH = "/api/users";
+exports.CHANGE_PASSWORD_API_PATH = `${exports.USERS_API_PATH}/change-password`;
 exports.CURRENT_USER_API_PATH = `${exports.USERS_API_PATH}/me`;
 exports.RESEND_VERIFICATION_API_PATH = `${exports.USERS_API_PATH}/:id/verify`;
 exports.VERIFY_USER_API_PATH = `${exports.USERS_API_PATH}/:id/verify/:verificationCode`;

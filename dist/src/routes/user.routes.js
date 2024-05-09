@@ -300,6 +300,7 @@ userRouter.post(apiPaths_1.FORGOT_PASSWORD_API_PATH, (0, validateResource_1.defa
  *         description: Bad request or password reset failed
  */
 userRouter.post(apiPaths_1.RESET_PASSWORD_API_PATH, (0, validateResource_1.default)(user_schema_1.resetPasswordSchema), user_controller_1.resetPasswordHandler);
+userRouter.patch(apiPaths_1.CHANGE_PASSWORD_API_PATH, requireUser_1.default, (0, validateResource_1.default)(user_schema_1.changePasswordSchema), user_controller_1.changePasswordHandler);
 // Delete user
 /**
  * @openapi

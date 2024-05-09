@@ -1,6 +1,7 @@
 import express from "express";
 import validateResource from "../middlewares/validateResource";
 import {
+    changePasswordSchema,
     createUserSchema,
     forgotPasswordSchema,
     resendVerificationSchema,
@@ -9,6 +10,7 @@ import {
     verifyUserSchema,
 } from "../schemas/user.schema";
 import {
+    changePasswordHandler,
     createUserHandler,
     deleteUserHandler,
     forgotPasswordHandler,
@@ -26,6 +28,7 @@ import {
     FORGOT_PASSWORD_API_PATH,
     RESET_PASSWORD_API_PATH,
     RESEND_VERIFICATION_API_PATH,
+    CHANGE_PASSWORD_API_PATH,
 } from "../constants/apiPaths";
 
 const userRouter = express.Router();
@@ -352,6 +355,12 @@ userRouter.post(
     resetPasswordHandler
 );
 
+userRouter.patch(
+    CHANGE_PASSWORD_API_PATH,
+    requireUser,
+    validateResource(changePasswordSchema),
+    changePasswordHandler
+);
 // Delete user
 /**
  * @openapi

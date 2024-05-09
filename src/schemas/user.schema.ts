@@ -201,3 +201,21 @@ export const resetPasswordSchema = object({
     }),
 });
 export type ResetPasswordInput = TypeOf<typeof resetPasswordSchema>;
+
+export const changePasswordSchema = object({
+    body: object({
+        currentPassword: string().min(
+            6,
+            "Password must be at least 6 characters"
+        ),
+        newPassword: string().min(6, "Password must be at least 6 characters"),
+        newPasswordConfirm: string().min(
+            1,
+            "Password confirmation is required!"
+        ),
+    }).refine((data) => data.newPassword === data.newPasswordConfirm, {
+        message: "Passwords do not match",
+        path: ["newPasswordConfirm"],
+    }),
+});
+export type ChangePasswordInput = TypeOf<typeof changePasswordSchema>["body"];

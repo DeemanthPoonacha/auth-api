@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUserHandler = exports.updateUserHandler = exports.getCurrentUserHandler = exports.resetPasswordHandler = exports.forgotPasswordHandler = exports.verifyUserHandler = exports.resendVerificationHandler = exports.createUserHandler = void 0;
+exports.deleteUserHandler = exports.updateUserHandler = exports.getCurrentUserHandler = exports.changePasswordHandler = exports.resetPasswordHandler = exports.forgotPasswordHandler = exports.verifyUserHandler = exports.resendVerificationHandler = exports.createUserHandler = void 0;
 const user_service_1 = require("../services/user.service");
 const auth_service_1 = require("../services/auth.service");
 const logger_1 = __importDefault(require("../utils/logger"));
@@ -151,6 +151,38 @@ function resetPasswordHandler(req, res) {
     });
 }
 exports.resetPasswordHandler = resetPasswordHandler;
+function changePasswordHandler(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const body = req.body;
+            const currentUser = res.locals.user;
+            const { currentPassword, newPassword } = body;
+            const message = "Couldn't change password!";
+            const { email } = currentUser;
+            const user = yield (0, user_service_1.findUserByEmail)(email);
+            if (!user) {
+                logger_1.default.info("User not found");
+                return res.status(400).send(message);
+            }
+            const isValid = yield user.validatePassword(currentPassword);
+            if (!isValid) {
+                logger_1.default.info("Invalid password");
+                return res.status(400).send("Invalid current password");
+            }
+            user.password = newPassword;
+            yield user.save();
+            logger_1.default.info("Password changed successfully!");
+            return res.status(202).send({
+                message: "Password changed successfully!",
+            });
+        }
+        catch (error) {
+            logger_1.default.error(error);
+            return res.status(400).send("Couldn't reset password!");
+        }
+    });
+}
+exports.changePasswordHandler = changePasswordHandler;
 function getCurrentUserHandler(req, res) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {

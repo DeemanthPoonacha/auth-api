@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPasswordSchema = exports.forgotPasswordSchema = exports.verifyUserSchema = exports.resendVerificationSchema = exports.updateUserSchema = exports.createUserSchema = void 0;
+exports.changePasswordSchema = exports.resetPasswordSchema = exports.forgotPasswordSchema = exports.verifyUserSchema = exports.resendVerificationSchema = exports.updateUserSchema = exports.createUserSchema = void 0;
 const zod_1 = require("zod");
 /**
  * @openapi
@@ -184,5 +184,15 @@ exports.resetPasswordSchema = (0, zod_1.object)({
     }).refine((data) => data.password === data.passwordConfirm, {
         message: "Passwords do not match",
         path: ["passwordConfirm"],
+    }),
+});
+exports.changePasswordSchema = (0, zod_1.object)({
+    body: (0, zod_1.object)({
+        currentPassword: (0, zod_1.string)().min(6, "Password must be at least 6 characters"),
+        newPassword: (0, zod_1.string)().min(6, "Password must be at least 6 characters"),
+        newPasswordConfirm: (0, zod_1.string)().min(1, "Password confirmation is required!"),
+    }).refine((data) => data.newPassword === data.newPasswordConfirm, {
+        message: "Passwords do not match",
+        path: ["newPasswordConfirm"],
     }),
 });
