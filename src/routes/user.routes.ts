@@ -401,8 +401,20 @@ userRouter.patch(
  *         content:
  *           application/json:
  *             schema:
- *               type: string
- *               example: User deleted successfully!
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: null
+ *                   example: null
+ *                   description: Clearing access token
+ *                 refreshToken:
+ *                   type: null
+ *                   example: null
+ *                   description: Clearing refresh token
+ *                 message:
+ *                   type: string
+ *                   example: User deleted successfully!
+ *                   description: Success message
  *       400:
  *         description: Bad request or user not found in the database
  *       401:

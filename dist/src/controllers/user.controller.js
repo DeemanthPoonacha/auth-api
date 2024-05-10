@@ -223,7 +223,14 @@ function deleteUserHandler(req, res) {
             return res.status(400).send(message);
         }
         yield (0, auth_service_1.invalidateUserSessions)({ userId: String(user._id) });
-        return res.send("User deleted successfully!");
+        const cookieConfig = config_1.default.get("cookieConfig");
+        res.clearCookie("accessToken", cookieConfig);
+        res.clearCookie("refreshToken", cookieConfig);
+        return res.send({
+            accessToken: null,
+            refreshToken: null,
+            message: "User deleted successfully!",
+        });
     });
 }
 exports.deleteUserHandler = deleteUserHandler;

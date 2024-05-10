@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { CookieOptions, Request, Response } from "express";
 import {
     ChangePasswordInput,
     CreateUserInput,
@@ -245,5 +245,12 @@ export async function deleteUserHandler(req: Request, res: Response) {
     }
 
     await invalidateUserSessions({ userId: String(user._id) });
-    return res.send("User deleted successfully!");
+    const cookieConfig = config.get<CookieOptions>("cookieConfig");
+    res.clearCookie("accessToken", cookieConfig);
+    res.clearCookie("refreshToken", cookieConfig);
+    return res.send({
+        accessToken: null,
+        refreshToken: null,
+        message: "User deleted successfully!",
+    });
 }
