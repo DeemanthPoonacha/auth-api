@@ -66,7 +66,18 @@ app.use(routes_1.default);
  *         description: App is up and running
  */
 app.get("/healthcheck", (req, res) => res.sendStatus(200));
-app.get("/", (req, res) => res.send("Express Authentication Application!"));
+app.get("/", (req, res) => res.send(`
+            <div 
+                style='
+                    height: 100vh;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;'
+            >
+                <h1>Express Authentication Application!</h1>
+                <h3>Find API Docs <a href='/docs'>here</></h3>
+            </div>`));
 const port = config_1.default.get("port");
 app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     logger_1.default.info(`[server]: Server is running at http://localhost:${port}`);
