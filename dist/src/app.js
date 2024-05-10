@@ -25,6 +25,18 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const swagger_1 = __importDefault(require("./utils/swagger"));
 const app = (0, express_1.default)();
+/**
+ * @openapi
+ * /healthcheck:
+ *  get:
+ *     tags:
+ *     - Healthcheck
+ *     description: Responds if the app is up and running
+ *     responses:
+ *       200:
+ *         description: App is up and running
+ */
+app.get("/healthcheck", (req, res) => res.sendStatus(200));
 //middlewares
 app.use(body_parser_1.default.json({ limit: "10mb" }));
 app.use((0, cookie_parser_1.default)());
@@ -54,18 +66,6 @@ app.use((req, res, next) => {
 });
 app.use(deserializeUser_1.default);
 app.use(routes_1.default);
-/**
- * @openapi
- * /healthcheck:
- *  get:
- *     tags:
- *     - Healthcheck
- *     description: Responds if the app is up and running
- *     responses:
- *       200:
- *         description: App is up and running
- */
-app.get("/healthcheck", (req, res) => res.sendStatus(200));
 app.get("/", (req, res) => res.send(`
             <div 
                 style='

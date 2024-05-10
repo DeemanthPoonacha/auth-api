@@ -12,6 +12,19 @@ import bodyParser from "body-parser";
 import swaggerDocs from "./utils/swagger";
 const app: Express = express();
 
+/**
+ * @openapi
+ * /healthcheck:
+ *  get:
+ *     tags:
+ *     - Healthcheck
+ *     description: Responds if the app is up and running
+ *     responses:
+ *       200:
+ *         description: App is up and running
+ */
+app.get("/healthcheck", (req, res) => res.sendStatus(200));
+
 //middlewares
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(cookieParser());
@@ -44,18 +57,6 @@ app.use((req, res, next) => {
 });
 app.use(deserializeUser);
 app.use(router);
-/**
- * @openapi
- * /healthcheck:
- *  get:
- *     tags:
- *     - Healthcheck
- *     description: Responds if the app is up and running
- *     responses:
- *       200:
- *         description: App is up and running
- */
-app.get("/healthcheck", (req, res) => res.sendStatus(200));
 
 app.get("/", (req, res) =>
     res.send(`
