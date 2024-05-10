@@ -289,14 +289,7 @@ userRouter.get(
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 path:
- *                   type: string
- *                   description: The path to the password reset email.
- *                 message:
- *                   type: string
- *                   description: Information message about the action taken.
+ *               $ref: '#/components/schemas/ForgotPasswordResponse'
  *       500:
  *         description: Internal Server Error
  *         content:
@@ -355,12 +348,42 @@ userRouter.post(
     resetPasswordHandler
 );
 
+// Change password
+/**
+ * @openapi
+ * '/api/users/change-password':
+ *   patch:
+ *     tags:
+ *       - User
+ *     summary: Change user password
+ *     description: Change the password of the currently logged-in user.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ChangePasswordInput'
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *              $ref: '#/components/schemas/ChangePasswordResponse'
+ *       400:
+ *         description: Bad request or user not found in the database
+ *       401:
+ *         description: Unauthorized - user not logged in
+ */
 userRouter.patch(
     CHANGE_PASSWORD_API_PATH,
     requireUser,
     validateResource(changePasswordSchema),
     changePasswordHandler
 );
+
 // Delete user
 /**
  * @openapi

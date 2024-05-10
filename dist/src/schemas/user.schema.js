@@ -127,6 +127,15 @@ exports.verifyUserSchema = (0, zod_1.object)({
  *           format: email
  *           description: The email address of the user requesting password reset.
  *           example: jane.doe@example.com
+ *     ForgotPasswordResponse:
+ *       type: object
+ *       properties:
+ *         path:
+ *           type: string
+ *           description: The path to the password reset email.
+ *         message:
+ *           type: string
+ *           description: Information message about the action taken.
  */
 exports.forgotPasswordSchema = (0, zod_1.object)({
     body: (0, zod_1.object)({
@@ -154,6 +163,8 @@ exports.forgotPasswordSchema = (0, zod_1.object)({
  *       required:
  *         - id
  *         - passwordResetCode
+ *         - password
+ *         - passwordConfirm
  *     ResetPasswordResponse:
  *       type: object
  *       properties:
@@ -186,6 +197,34 @@ exports.resetPasswordSchema = (0, zod_1.object)({
         path: ["passwordConfirm"],
     }),
 });
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     ChangePasswordInput:
+ *       type: object
+ *       required:
+ *         - currentPassword
+ *         - newPassword
+ *         - newPasswordConfirm
+ *       properties:
+ *         currentPassword:
+ *           type: string
+ *           description: The user's current password.
+ *           example: password
+ *         newPassword:
+ *           type: string
+ *           description: The new password for the user's account.
+ *           example: new-password
+ *         newPasswordConfirm:
+ *           type: string
+ *           description: Confirmation of the new password.
+ *           example: new-password
+ *     ChangePasswordResponse:
+ *       type: string
+ *       description: A message indicating the success of the password change operation.
+ *       example: Password changed successfully!
+ */
 exports.changePasswordSchema = (0, zod_1.object)({
     body: (0, zod_1.object)({
         currentPassword: (0, zod_1.string)().min(6, "Password must be at least 6 characters"),

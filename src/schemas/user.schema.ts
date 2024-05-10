@@ -138,6 +138,15 @@ export type VerifyUserInput = TypeOf<typeof verifyUserSchema>["params"];
  *           format: email
  *           description: The email address of the user requesting password reset.
  *           example: jane.doe@example.com
+ *     ForgotPasswordResponse:
+ *       type: object
+ *       properties:
+ *         path:
+ *           type: string
+ *           description: The path to the password reset email.
+ *         message:
+ *           type: string
+ *           description: Information message about the action taken.
  */
 export const forgotPasswordSchema = object({
     body: object({
@@ -168,6 +177,8 @@ export type ForgotPasswordInput = TypeOf<typeof forgotPasswordSchema>["body"];
  *       required:
  *         - id
  *         - passwordResetCode
+ *         - password
+ *         - passwordConfirm
  *     ResetPasswordResponse:
  *       type: object
  *       properties:
@@ -202,6 +213,34 @@ export const resetPasswordSchema = object({
 });
 export type ResetPasswordInput = TypeOf<typeof resetPasswordSchema>;
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     ChangePasswordInput:
+ *       type: object
+ *       required:
+ *         - currentPassword
+ *         - newPassword
+ *         - newPasswordConfirm
+ *       properties:
+ *         currentPassword:
+ *           type: string
+ *           description: The user's current password.
+ *           example: password
+ *         newPassword:
+ *           type: string
+ *           description: The new password for the user's account.
+ *           example: new-password
+ *         newPasswordConfirm:
+ *           type: string
+ *           description: Confirmation of the new password.
+ *           example: new-password
+ *     ChangePasswordResponse:
+ *       type: string
+ *       description: A message indicating the success of the password change operation.
+ *       example: Password changed successfully!
+ */
 export const changePasswordSchema = object({
     body: object({
         currentPassword: string().min(

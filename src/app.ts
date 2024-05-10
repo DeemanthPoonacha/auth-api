@@ -31,17 +31,19 @@ const corsConfig: CorsOptions = {
     ],
 };
 const cookieConfig = config.get<CookieOptions>("cookieConfig");
-console.log("🚀 ~ config:", config);
-console.log("🚀 ~ cookieConfig:", cookieConfig);
-console.log("🚀 ~ corsConfig:", corsConfig);
+log.info("Cookie Config:");
+log.info(cookieConfig);
+log.info("Cors Config:");
+log.info(corsConfig);
 app.use(cors(corsConfig));
-app.use(deserializeUser);
-app.use(router);
 app.use((req, res, next) => {
-    console.log(`Handling ${req.method} request to ${req.url}`);
+    log.info(
+        `Handling ${req.method} request to ${req.url} from ${req.headers.origin}`
+    );
     next();
 });
-
+app.use(deserializeUser);
+app.use(router);
 /**
  * @openapi
  * /healthcheck:

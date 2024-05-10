@@ -153,32 +153,29 @@ function resetPasswordHandler(req, res) {
 exports.resetPasswordHandler = resetPasswordHandler;
 function changePasswordHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
+        const message = "Couldn't change password!";
         try {
-            const body = req.body;
+            const { currentPassword, newPassword } = req.body;
             const currentUser = res.locals.user;
-            const { currentPassword, newPassword } = body;
-            const message = "Couldn't change password!";
             const { email } = currentUser;
             const user = yield (0, user_service_1.findUserByEmail)(email);
             if (!user) {
                 logger_1.default.info("User not found");
-                return res.status(400).send(message);
+                return res.status(401).send(message);
             }
             const isValid = yield user.validatePassword(currentPassword);
             if (!isValid) {
                 logger_1.default.info("Invalid password");
-                return res.status(400).send("Invalid current password");
+                return res.status(401).send("Invalid current password");
             }
             user.password = newPassword;
             yield user.save();
             logger_1.default.info("Password changed successfully!");
-            return res.status(202).send({
-                message: "Password changed successfully!",
-            });
+            return res.send("Password changed successfully!");
         }
         catch (error) {
             logger_1.default.error(error);
-            return res.status(400).send("Couldn't reset password!");
+            return res.status(401).send(message);
         }
     });
 }

@@ -43,16 +43,17 @@ const corsConfig = {
     ],
 };
 const cookieConfig = config_1.default.get("cookieConfig");
-console.log("🚀 ~ config:", config_1.default);
-console.log("🚀 ~ cookieConfig:", cookieConfig);
-console.log("🚀 ~ corsConfig:", corsConfig);
+logger_1.default.info("Cookie Config:");
+logger_1.default.info(cookieConfig);
+logger_1.default.info("Cors Config:");
+logger_1.default.info(corsConfig);
 app.use((0, cors_1.default)(corsConfig));
-app.use(deserializeUser_1.default);
-app.use(routes_1.default);
 app.use((req, res, next) => {
-    console.log(`Handling ${req.method} request to ${req.url}`);
+    logger_1.default.info(`Handling ${req.method} request to ${req.url} from ${req.headers.origin}`);
     next();
 });
+app.use(deserializeUser_1.default);
+app.use(routes_1.default);
 /**
  * @openapi
  * /healthcheck:

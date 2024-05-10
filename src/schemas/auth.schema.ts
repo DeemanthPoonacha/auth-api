@@ -6,6 +6,9 @@ import { TypeOf, object, string } from "zod";
  *   schemas:
  *     CreateSessionInput:
  *       type: object
+ *       required:
+ *         - email
+ *         - password
  *       properties:
  *         email:
  *           type: string

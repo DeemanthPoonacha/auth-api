@@ -165,39 +165,37 @@ export async function resetPasswordHandler(
         return res.status(400).send("Couldn't reset password!");
     }
 }
+
 export async function changePasswordHandler(
     req: Request<{}, {}, ChangePasswordInput>,
     res: Response
 ) {
+    const message = "Couldn't change password!";
     try {
-        const body = req.body;
+        const { currentPassword, newPassword } = req.body;
         const currentUser: CurrentUser = res.locals.user;
-        const { currentPassword, newPassword } = body;
-        const message = "Couldn't change password!";
         const { email } = currentUser;
-        const user = await findUserByEmail(email as string);
 
+        const user = await findUserByEmail(email as string);
         if (!user) {
             log.info("User not found");
-            return res.status(400).send(message);
+            return res.status(401).send(message);
         }
 
         const isValid = await user.validatePassword(currentPassword);
         if (!isValid) {
             log.info("Invalid password");
-            return res.status(400).send("Invalid current password");
+            return res.status(401).send("Invalid current password");
         }
 
         user.password = newPassword;
         await user.save();
 
         log.info("Password changed successfully!");
-        return res.status(202).send({
-            message: "Password changed successfully!",
-        });
+        return res.send("Password changed successfully!");
     } catch (error) {
         log.error(error);
-        return res.status(400).send("Couldn't reset password!");
+        return res.status(401).send(message);
     }
 }
 

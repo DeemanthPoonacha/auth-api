@@ -8,13 +8,10 @@ export default async function deserializeUser(
     res: Response,
     next: NextFunction
 ) {
-    console.log("🚀 ~ req.headers:", req.headers);
-
     const accessToken =
         get(req, "cookies.accessToken") ||
         get(req, "headers.authorization", "").replace(/^Bearer\s/, "");
 
-    console.log("🚀 ~ accessToken:", accessToken);
     if (accessToken) {
         const decoded = verifyJwt(accessToken, "accessTokenPublicKey");
 

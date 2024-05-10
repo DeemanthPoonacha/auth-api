@@ -244,14 +244,7 @@ userRouter.get(apiPaths_1.VERIFY_USER_API_PATH, (0, validateResource_1.default)(
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 path:
- *                   type: string
- *                   description: The path to the password reset email.
- *                 message:
- *                   type: string
- *                   description: Information message about the action taken.
+ *               $ref: '#/components/schemas/ForgotPasswordResponse'
  *       500:
  *         description: Internal Server Error
  *         content:
@@ -300,6 +293,35 @@ userRouter.post(apiPaths_1.FORGOT_PASSWORD_API_PATH, (0, validateResource_1.defa
  *         description: Bad request or password reset failed
  */
 userRouter.post(apiPaths_1.RESET_PASSWORD_API_PATH, (0, validateResource_1.default)(user_schema_1.resetPasswordSchema), user_controller_1.resetPasswordHandler);
+// Change password
+/**
+ * @openapi
+ * '/api/users/change-password':
+ *   patch:
+ *     tags:
+ *       - User
+ *     summary: Change user password
+ *     description: Change the password of the currently logged-in user.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ChangePasswordInput'
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *              $ref: '#/components/schemas/ChangePasswordResponse'
+ *       400:
+ *         description: Bad request or user not found in the database
+ *       401:
+ *         description: Unauthorized - user not logged in
+ */
 userRouter.patch(apiPaths_1.CHANGE_PASSWORD_API_PATH, requireUser_1.default, (0, validateResource_1.default)(user_schema_1.changePasswordSchema), user_controller_1.changePasswordHandler);
 // Delete user
 /**
