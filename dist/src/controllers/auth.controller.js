@@ -12,7 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.invalidateSessionHandler = exports.refreshAccessTokenHandler = exports.createSessionHandler = void 0;
+exports.createSessionHandler = createSessionHandler;
+exports.refreshAccessTokenHandler = refreshAccessTokenHandler;
+exports.invalidateSessionHandler = invalidateSessionHandler;
 const user_service_1 = require("../services/user.service");
 const auth_service_1 = require("../services/auth.service");
 const lodash_1 = require("lodash");
@@ -51,7 +53,6 @@ function createSessionHandler(req, res) {
         return res.send(loginResponse);
     });
 }
-exports.createSessionHandler = createSessionHandler;
 function refreshAccessTokenHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const refreshToken = (0, lodash_1.get)(req, "cookie.refreshToken") ||
@@ -64,7 +65,6 @@ function refreshAccessTokenHandler(req, res) {
         return res.send({ accessToken });
     });
 }
-exports.refreshAccessTokenHandler = refreshAccessTokenHandler;
 function invalidateSessionHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = (0, lodash_1.get)(res.locals.user, "_id");
@@ -80,4 +80,3 @@ function invalidateSessionHandler(req, res) {
         return res.send({ accessToken: null, refreshToken: null });
     });
 }
-exports.invalidateSessionHandler = invalidateSessionHandler;

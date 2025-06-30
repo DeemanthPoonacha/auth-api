@@ -12,7 +12,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUserHandler = exports.updateUserHandler = exports.getCurrentUserHandler = exports.changePasswordHandler = exports.resetPasswordHandler = exports.forgotPasswordHandler = exports.verifyUserHandler = exports.resendVerificationHandler = exports.createUserHandler = void 0;
+exports.createUserHandler = createUserHandler;
+exports.resendVerificationHandler = resendVerificationHandler;
+exports.verifyUserHandler = verifyUserHandler;
+exports.forgotPasswordHandler = forgotPasswordHandler;
+exports.resetPasswordHandler = resetPasswordHandler;
+exports.changePasswordHandler = changePasswordHandler;
+exports.getCurrentUserHandler = getCurrentUserHandler;
+exports.updateUserHandler = updateUserHandler;
+exports.deleteUserHandler = deleteUserHandler;
 const user_service_1 = require("../services/user.service");
 const auth_service_1 = require("../services/auth.service");
 const logger_1 = __importDefault(require("../utils/logger"));
@@ -22,6 +30,8 @@ const mailer_1 = require("../utils/mailer");
 const mailer_2 = require("../utils/mailer");
 const lodash_1 = require("lodash");
 const user_model_1 = require("../models/user.model");
+const emails_1 = require("../templates/emails");
+const frontendOrigin = config_1.default.get("clientOrigin");
 function createUserHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const body = req.body;
@@ -40,7 +50,6 @@ function createUserHandler(req, res) {
         }
     });
 }
-exports.createUserHandler = createUserHandler;
 function resendVerificationHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { id } = req.params;
@@ -50,11 +59,7 @@ function resendVerificationHandler(req, res) {
                 return res.send("User not found!");
             const frontendOrigin = config_1.default.get("clientOrigin");
             if (user.verified)
-                return res.send(`
-        <div>
-            <p>User already verified!</p>
-            <p>To login to your account, <a href="${frontendOrigin}/auth/login">Click Here</a>.</p>
-        </div>`);
+                return res.send((0, emails_1.alreadyVerifiedTemplate)(`${frontendOrigin}/auth/login`));
             yield (0, mailer_1.sendVerificationMail)(user);
             return res.send("Verification mail will be sent to the Email address if registered.");
         }
@@ -63,7 +68,6 @@ function resendVerificationHandler(req, res) {
         }
     });
 }
-exports.resendVerificationHandler = resendVerificationHandler;
 function verifyUserHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { id, verificationCode } = req.params;
@@ -73,28 +77,21 @@ function verifyUserHandler(req, res) {
                 return res.status(404).send("User not found!");
             const frontendOrigin = config_1.default.get("clientOrigin");
             if (user.verified)
-                return res.status(409).send(`
-        <div>
-            <p>User already verified!</p>
-            <p>To login to your account, <a href="${frontendOrigin}/auth/login">Click Here</a>.</p>
-        </div>`);
+                return res
+                    .status(409)
+                    .send((0, emails_1.alreadyVerifiedTemplate)(`${frontendOrigin}/auth/login`));
             if (verificationCode !== user.verificationCode) {
                 return res.status(400).send("Invalid verification code");
             }
             user.verified = true;
             yield user.save();
-            return res.send(`
-        <div>
-            <p>User verified successfully!</p>
-            <p>To login to your account, <a href="${frontendOrigin}/auth/login">Click Here</a>.</p>
-        </div>`);
+            return res.send((0, emails_1.verificationSuccessTemplate)(`${frontendOrigin}/auth/login`));
         }
         catch (error) {
             return res.status(500).send(error);
         }
     });
 }
-exports.verifyUserHandler = verifyUserHandler;
 function forgotPasswordHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { email } = req.body;
@@ -117,7 +114,6 @@ function forgotPasswordHandler(req, res) {
         return res.status(202).send({ path: `password-reset-mail`, message });
     });
 }
-exports.forgotPasswordHandler = forgotPasswordHandler;
 function resetPasswordHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -150,7 +146,6 @@ function resetPasswordHandler(req, res) {
         }
     });
 }
-exports.resetPasswordHandler = resetPasswordHandler;
 function changePasswordHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const message = "Couldn't change password!";
@@ -179,16 +174,14 @@ function changePasswordHandler(req, res) {
         }
     });
 }
-exports.changePasswordHandler = changePasswordHandler;
 function getCurrentUserHandler(req, res) {
-    var _a;
     return __awaiter(this, void 0, void 0, function* () {
+        var _a;
         const user = yield (0, user_service_1.findUserById)((_a = res.locals.user) === null || _a === void 0 ? void 0 : _a._id);
         const payload = (0, lodash_1.omit)(user === null || user === void 0 ? void 0 : user.toJSON(), user_model_1.privateUserFields);
         return res.send(payload);
     });
 }
-exports.getCurrentUserHandler = getCurrentUserHandler;
 function updateUserHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const body = req.body;
@@ -208,7 +201,6 @@ function updateUserHandler(req, res) {
         return res.send("User updated successfully!");
     });
 }
-exports.updateUserHandler = updateUserHandler;
 function deleteUserHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const message = "Couldn't delete user";
@@ -233,4 +225,3 @@ function deleteUserHandler(req, res) {
         });
     });
 }
-exports.deleteUserHandler = deleteUserHandler;

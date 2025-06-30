@@ -16,6 +16,7 @@ const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const package_json_1 = require("../../package.json");
 const logger_1 = __importDefault(require("./logger"));
+const config_1 = __importDefault(require("config"));
 const routes = ["./src/routes/*.ts", "./src/schemas/*.ts", "./src/app.ts"];
 const options = {
     definition: {
@@ -40,7 +41,7 @@ const options = {
         ],
         servers: [
             {
-                url: "http://localhost:8080/",
+                url: config_1.default.get("serverOrigin") || "http://localhost:8080", // Server URL
             },
         ],
         tags: [

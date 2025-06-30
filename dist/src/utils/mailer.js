@@ -12,10 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendPasswordResetMail = exports.sendVerificationMail = void 0;
+exports.sendVerificationMail = sendVerificationMail;
+exports.sendPasswordResetMail = sendPasswordResetMail;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const logger_1 = __importDefault(require("./logger"));
 const config_1 = __importDefault(require("config"));
+const emails_1 = require("../templates/emails");
 const senderMailId = config_1.default.get("senderMailId");
 function generateTestCreds() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -45,24 +47,24 @@ function sendEmail(payload) {
 function sendVerificationMail(user) {
     return __awaiter(this, void 0, void 0, function* () {
         const serverOrigin = config_1.default.get("serverOrigin");
+        const verificationUrl = `${serverOrigin}/api/users/${user._id}/verify/${user.verificationCode}`;
         yield sendEmail({
             from: senderMailId,
             to: user.email,
-            subject: "Please verify your account",
-            html: `<p>To verify your email address, <a href="${serverOrigin}/api/users/${user._id}/verify/${user.verificationCode}">Click Here</a>.</p>`,
+            subject: "Verify Your Email Address - Complete Your Registration",
+            html: (0, emails_1.verificationEmailTemplate)(verificationUrl),
         });
     });
 }
-exports.sendVerificationMail = sendVerificationMail;
 function sendPasswordResetMail(user, passwordResetCode) {
     return __awaiter(this, void 0, void 0, function* () {
         const frontendOrigin = config_1.default.get("clientOrigin");
+        const resetUrl = `${frontendOrigin}/auth/resetPassword/${user._id}/${passwordResetCode}`;
         yield sendEmail({
             from: senderMailId,
             to: user.email,
-            subject: "Password reset email",
-            html: `<p>To reset your password, <a href="${frontendOrigin}/auth/resetPassword/${user._id}/${passwordResetCode}">Click Here</a>.</p>`,
+            subject: "Reset Your Password - Secure Your Account",
+            html: (0, emails_1.passwordResetEmailTemplate)(resetUrl),
         });
     });
 }
-exports.sendPasswordResetMail = sendPasswordResetMail;
