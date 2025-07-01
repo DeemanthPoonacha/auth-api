@@ -15,12 +15,13 @@ const lodash_1 = require("lodash");
 const auth_service_1 = require("../services/auth.service");
 function deserializeUser(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("Mobile - Cookies received:", req.headers.cookie, req.cookies);
+        console.log("Mobile - Cookies received:", req.cookies.accessToken);
         const accessToken = (0, lodash_1.get)(req, "cookies.accessToken") ||
             (0, lodash_1.get)(req, "headers.authorization", "").replace(/^Bearer\s/, "");
         if (accessToken) {
             const decoded = (0, jwtUtils_1.verifyJwt)(accessToken, "accessTokenPublicKey");
             if (decoded) {
+                console.log("Mobile - Decoded:", decoded);
                 res.locals.user = decoded;
                 return next();
             }

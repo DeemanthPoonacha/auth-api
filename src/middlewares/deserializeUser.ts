@@ -8,7 +8,7 @@ export default async function deserializeUser(
   res: Response,
   next: NextFunction
 ) {
-  console.log("Mobile - Cookies received:", req.headers.cookie, req.cookies);
+  console.log("Mobile - Cookies received:", req.cookies.accessToken);
   const accessToken =
     get(req, "cookies.accessToken") ||
     get(req, "headers.authorization", "").replace(/^Bearer\s/, "");
@@ -17,6 +17,7 @@ export default async function deserializeUser(
     const decoded = verifyJwt(accessToken, "accessTokenPublicKey");
 
     if (decoded) {
+      console.log("Mobile - Decoded:", decoded);
       res.locals.user = decoded;
       return next();
     }
