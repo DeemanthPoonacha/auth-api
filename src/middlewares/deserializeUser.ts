@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { verifyJwt } from "../utils/jwtUtils";
 import { get } from "lodash";
 import { reIssueAccessToken } from "../services/auth.service";
+import config from "config";
+import { CookieOptions } from "express";
 
 export default async function deserializeUser(
   req: Request,
@@ -30,14 +32,14 @@ export default async function deserializeUser(
     const newAccessToken = await reIssueAccessToken({ refreshToken });
 
     if (newAccessToken) {
+      const cookieConfig = config.get<CookieOptions>("cookieConfig");
+      const accessMaxAge = 15 * 60 * 1000; //15 minutes
+
       res.cookie("accessToken", newAccessToken, {
-        maxAge: 15 * 60 * 1000, //15 minutes
-        httpOnly: true,
-        domain: "localhost",
-        path: "/",
-        sameSite: "strict",
-        secure: false,
+        maxAge: accessMaxAge,
+        ...cookieConfig,
       });
+
       const decoded = verifyJwt(
         newAccessToken as string,
         "accessTokenPublicKey"

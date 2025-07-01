@@ -9,7 +9,6 @@ export default {
     refreshTokenPrivateKey: "",
     cookieConfig: {
         httpOnly: true,
-        domain: "auth-api-kmqg.onrender.com",
         path: "/",
         sameSite: "none",
         secure: true,

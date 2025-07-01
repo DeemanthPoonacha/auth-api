@@ -8,11 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = deserializeUser;
 const jwtUtils_1 = require("../utils/jwtUtils");
 const lodash_1 = require("lodash");
 const auth_service_1 = require("../services/auth.service");
+const config_1 = __importDefault(require("config"));
 function deserializeUser(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log("Mobile - Cookies received:", req.cookies.accessToken);
@@ -30,14 +34,9 @@ function deserializeUser(req, res, next) {
         if (refreshToken) {
             const newAccessToken = yield (0, auth_service_1.reIssueAccessToken)({ refreshToken });
             if (newAccessToken) {
-                res.cookie("accessToken", newAccessToken, {
-                    maxAge: 15 * 60 * 1000, //15 minutes
-                    httpOnly: true,
-                    domain: "localhost",
-                    path: "/",
-                    sameSite: "strict",
-                    secure: false,
-                });
+                const cookieConfig = config_1.default.get("cookieConfig");
+                const accessMaxAge = 15 * 60 * 1000; //15 minutes
+                res.cookie("accessToken", newAccessToken, Object.assign({ maxAge: accessMaxAge }, cookieConfig));
                 const decoded = (0, jwtUtils_1.verifyJwt)(newAccessToken, "accessTokenPublicKey");
                 res.locals.user = decoded;
                 return next();

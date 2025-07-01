@@ -18,7 +18,4 @@ export default {
         secure: "MAILER_SECURE",
     },
 
-    cookieConfig: {
-        domain: "SERVER_DOMAIN",
-    },
 };
