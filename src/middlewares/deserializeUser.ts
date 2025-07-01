@@ -4,46 +4,47 @@ import { get } from "lodash";
 import { reIssueAccessToken } from "../services/auth.service";
 
 export default async function deserializeUser(
-    req: Request,
-    res: Response,
-    next: NextFunction
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) {
-    const accessToken =
-        get(req, "cookies.accessToken") ||
-        get(req, "headers.authorization", "").replace(/^Bearer\s/, "");
+  console.log("Mobile - Cookies received:", req.headers.cookie, req.cookies);
+  const accessToken =
+    get(req, "cookies.accessToken") ||
+    get(req, "headers.authorization", "").replace(/^Bearer\s/, "");
 
-    if (accessToken) {
-        const decoded = verifyJwt(accessToken, "accessTokenPublicKey");
+  if (accessToken) {
+    const decoded = verifyJwt(accessToken, "accessTokenPublicKey");
 
-        if (decoded) {
-            res.locals.user = decoded;
-            return next();
-        }
+    if (decoded) {
+      res.locals.user = decoded;
+      return next();
     }
+  }
 
-    const refreshToken =
-        get(req, "cookies.refreshToken") || get(req, "headers.x-refresh");
+  const refreshToken =
+    get(req, "cookies.refreshToken") || get(req, "headers.x-refresh");
 
-    if (refreshToken) {
-        const newAccessToken = await reIssueAccessToken({ refreshToken });
+  if (refreshToken) {
+    const newAccessToken = await reIssueAccessToken({ refreshToken });
 
-        if (newAccessToken) {
-            res.cookie("accessToken", newAccessToken, {
-                maxAge: 15 * 60 * 1000, //15 minutes
-                httpOnly: true,
-                domain: "localhost",
-                path: "/",
-                sameSite: "strict",
-                secure: false,
-            });
-            const decoded = verifyJwt(
-                newAccessToken as string,
-                "accessTokenPublicKey"
-            );
+    if (newAccessToken) {
+      res.cookie("accessToken", newAccessToken, {
+        maxAge: 15 * 60 * 1000, //15 minutes
+        httpOnly: true,
+        domain: "localhost",
+        path: "/",
+        sameSite: "strict",
+        secure: false,
+      });
+      const decoded = verifyJwt(
+        newAccessToken as string,
+        "accessTokenPublicKey"
+      );
 
-            res.locals.user = decoded;
-            return next();
-        }
+      res.locals.user = decoded;
+      return next();
     }
-    return next();
+  }
+  return next();
 }

@@ -15,6 +15,7 @@ const lodash_1 = require("lodash");
 const auth_service_1 = require("../services/auth.service");
 function deserializeUser(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log("Mobile - Cookies received:", req.headers.cookie, req.cookies);
         const accessToken = (0, lodash_1.get)(req, "cookies.accessToken") ||
             (0, lodash_1.get)(req, "headers.authorization", "").replace(/^Bearer\s/, "");
         if (accessToken) {
