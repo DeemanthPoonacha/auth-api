@@ -11,7 +11,7 @@ export default {
         httpOnly: true,
         domain: "auth-api-kmqg.onrender.com",
         path: "/",
-        sameSite: "lax",
+        sameSite: "none",
         secure: true,
     },
 };
